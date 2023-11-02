@@ -32,8 +32,10 @@ const userSchema = new Schema<IUser>({
         default: ""
     },
     post: [{
-        postId: Schema.Types.ObjectId,
-        ref: 'Post'
+        postId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Post'
+        }
     }]
 })
 
