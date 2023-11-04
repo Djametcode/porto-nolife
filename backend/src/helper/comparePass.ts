@@ -9,6 +9,5 @@ const comparePass = (data: IDatabase) => {
     const isMatch = bcrypt.compare(data.plainPass, data.databasePass)
     return isMatch
 }
-//lorem 
 
 export { comparePass }
