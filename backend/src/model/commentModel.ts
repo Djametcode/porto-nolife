@@ -45,3 +45,5 @@ const commentSchema = new Schema<IComment>({
         ref: 'Post'
     }
 })
+
+export const commentModel = mongoose.model<IComment>("Comment", commentSchema)

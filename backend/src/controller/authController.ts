@@ -64,33 +64,4 @@ const loginUser = async (req: Request, res: Response) => {
     }
 }
 
-const updateAvatar = async (req: Request, res: Response) => {
-    let file = req.file
-    let userId = req.user.userId
-
-    if (!file) {
-        return res.status(400).json({ msg: "No file attaced" })
-    }
-
-    try {
-        const user = await userModel.findOne({ _id: userId })
-
-        if (!user) {
-            return res.status(404).json({ msg: "Token not valid" })
-        }
-
-        let result = await cloudinary.uploader.upload(file.path, {
-            folder: "Testing",
-            resource_type: 'auto'
-        })
-
-        user.updateOne({ $set: { avatar: result.secure_url } })
-        await user.save()
-
-        return res.status(200).json({ msg: "success", user })
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-export { registUser, loginUser, updateAvatar }
+export { registUser, loginUser }

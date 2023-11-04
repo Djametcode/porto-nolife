@@ -1,7 +1,8 @@
 import express from 'express'
-import { loginUser, registUser, updateAvatar } from '../controller/authController'
+import { loginUser, registUser } from '../controller/authController'
 import { authMiddleware } from '../middleware/auth'
 import { upload } from '../middleware/multer'
+import { updateAvatar } from '../controller/userController'
 const route = express.Router()
 
 route.post('/regist-user', registUser)
