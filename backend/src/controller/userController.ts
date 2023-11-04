@@ -1,14 +1,37 @@
 import { Request, Response } from "express";
 import { userModel } from "../model/userModel";
 import { v2 as cloudinary } from "cloudinary";
+import { postModel } from "../model/postModel";
+import { likeModel } from "../model/likeModel";
+import { commentModel } from "../model/commentModel";
+import { replyModel } from "../model/replyModel";
 
 const deleteAccount = async (req: Request, res: Response) => {
     const userId = req.user.userId;
 
     try {
+        const tokenCheck = await userModel.findOne({ _id: userId })
+
+        if (!tokenCheck) {
+            return res.status(401).json({ msg: "Token invalid" })
+        }
+
+        const checkPrevillge = tokenCheck._id.toString() === userId
+        console.log(userId, tokenCheck._id)
+        console.log(checkPrevillge)
+
+        if (!checkPrevillge) {
+            return res.status(401).json({ msg: "Please login with correct account" })
+        }
+
+        const post = await postModel.deleteMany({ createdBy: userId })
+        const like = await likeModel.deleteMany({ createdBy: userId })
+        const comment = await commentModel.deleteMany({ createdBy: userId })
+        const reply = await replyModel.deleteMany({ createdBy: userId })
+
         const user = await userModel.findOneAndDelete({ _id: userId })
 
-        return res.status(200).json({ msg: "Account deleted thx for using no-life", user })
+        return res.status(200).json({ msg: "Account deleted thx for using no-life", user, post, like, comment, reply })
     } catch (error) {
         console.log(error)
     }
