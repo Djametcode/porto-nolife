@@ -11,7 +11,6 @@ interface IComment {
 }
 
 interface Image {
-    _id: Types.ObjectId;
     imageUrl: string;
 }
 
@@ -29,9 +28,6 @@ const postSchema = new Schema<IPost>({
         type: String,
     },
     images: [{
-        _id: {
-            type: Schema.Types.ObjectId
-        },
         imageUrl: {
             type: String,
         }

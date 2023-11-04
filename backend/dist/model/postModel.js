@@ -11,9 +11,6 @@ const postSchema = new Schema({
         type: String,
     },
     images: [{
-            _id: {
-                type: Schema.Types.ObjectId
-            },
             imageUrl: {
                 type: String,
             }

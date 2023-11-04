@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPostById = exports.getAllPost = exports.updatePost = exports.createPost = void 0;
+exports.deletePost = exports.getPostById = exports.getAllPost = exports.updatePost = exports.createPost = void 0;
 const cloudinary_1 = require("cloudinary");
 const postModel_1 = require("../model/postModel");
 const userModel_1 = require("../model/userModel");
@@ -18,45 +18,51 @@ const createPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const createdBy = req.user.userId;
     const { postText } = req.body;
     let file = (_a = req.file) === null || _a === void 0 ? void 0 : _a.path;
-    if (!file) {
-        if (!postText) {
-            return res.status(400).json({ msg: "Please fill text" });
+    try {
+        const user = yield userModel_1.userModel.findOne({ _id: createdBy });
+        if (!user) {
+            return res.status(404).json({ msg: "Token not valid" });
         }
-        try {
+        if (!file) {
+            if (!postText) {
+                return res.status(400).json({ msg: "Please fill text" });
+            }
+            try {
+                const newPost = new postModel_1.postModel({
+                    postText: postText,
+                    createdBy: createdBy
+                });
+                const post = yield postModel_1.postModel.create(newPost);
+                user.post.push({ postId: post._id });
+                yield (user === null || user === void 0 ? void 0 : user.save());
+                return res.status(200).json({ msg: "success", post, user });
+            }
+            catch (error) {
+                console.log(error);
+            }
+        }
+        else {
+            if (!postText) {
+                return res.status(400).json({ msg: "Please fill text" });
+            }
+            const result = yield cloudinary_1.v2.uploader.upload(file, {
+                folder: "Testing",
+                resource_type: 'auto'
+            });
             const newPost = new postModel_1.postModel({
                 postText: postText,
+                images: [{
+                        imageUrl: result.secure_url
+                    }],
                 createdBy: createdBy
             });
-            const user = yield userModel_1.userModel.findOne({ _id: createdBy });
-            if (!user) {
-                return res.status(404).json({ msg: "Token not valid" });
-            }
             const post = yield postModel_1.postModel.create(newPost);
-            user === null || user === void 0 ? void 0 : user.post.push({ postId: post._id });
-            yield (user === null || user === void 0 ? void 0 : user.save());
-            return res.status(200).json({ msg: "success", post, user });
-        }
-        catch (error) {
-            console.log(error);
+            user.post.push({ postId: post._id });
+            return res.status(200).json({ msg: "success", post });
         }
     }
-    else {
-        if (!postText) {
-            return res.status(400).json({ msg: "Please fill text" });
-        }
-        const result = yield cloudinary_1.v2.uploader.upload(file, {
-            folder: "Testing",
-            resource_type: 'auto'
-        });
-        const newPost = new postModel_1.postModel({
-            postText: postText,
-            images: [{
-                    imageUrl: result.secure_url
-                }],
-            createdBy: createdBy
-        });
-        const post = yield postModel_1.postModel.create(newPost);
-        return res.status(200).json({ msg: "success", post });
+    catch (error) {
+        console.log(error);
     }
 });
 exports.createPost = createPost;
@@ -105,12 +111,19 @@ const updatePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 folder: "Testing",
                 resource_type: 'auto'
             });
-            // Remove the image with the given imageId
-            post.images = post.images.filter(image => image.toString() !== imageId);
-            // Add the new image URL to the post
+            const check = post.images.length !== 0;
+            console.log(check);
+            if (check) {
+                // Remove the image with the given imageId
+                post.updateOne({ $pop: { "images._id": imageId } });
+                // Add the new image URL to the post
+                post.images.push({ imageUrl: result.secure_url });
+                yield post.save();
+                return res.status(200).json({ msg: "Success", post });
+            }
             post.images.push({ imageUrl: result.secure_url });
-            // Save the changes to the post
             yield post.save();
+            // Save the changes to the post
         }
         if (updateText) {
             // Update the post text if provided
@@ -129,21 +142,28 @@ const deletePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const { id } = req.params;
     const userId = req.user.userId;
     try {
-        const post = yield postModel_1.postModel.findOne({ _id: id });
-        if (!post) {
-            return res.status(404).json({ msg: "Post not found or deleted" });
-        }
         const user = yield userModel_1.userModel.findOne({ _id: userId });
         if (!user) {
             return res.status(401).json({ msg: "Token not valid" });
         }
-        const checkUser = post.createdBy.toString() === userId;
-        console.log(checkUser);
-        if (!checkUser) {
-            return res.status(401).json({ msg: "Only creator can delete this" });
+        const post = yield postModel_1.postModel.findOne({ _id: id });
+        if (!post) {
+            return res.status(404).json({ msg: "Post not found or deleted" });
         }
+        if (post.createdBy.toString() !== userId) {
+            return res.status(401).json({ msg: "Only the creator can delete this post" });
+        }
+        // Delete the post
+        yield post.deleteOne();
+        // Remove the post from the user's posts array
+        user.post = user.post.filter(postId => postId.toString() !== id);
+        // Save the changes to the user
+        yield user.save();
+        return res.status(200).json({ msg: "Success" });
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
+        return res.status(500).json({ msg: "Internal Server Error" });
     }
 });
+exports.deletePost = deletePost;

@@ -2,56 +2,61 @@ import { Request, Response } from "express";
 import { v2 as cloudinary } from 'cloudinary'
 import { postModel } from "../model/postModel";
 import { userModel } from "../model/userModel";
+import { Types } from "mongoose";
 
 const createPost = async (req: Request, res: Response) => {
     const createdBy = req.user.userId
     const { postText } = req.body
     let file = req.file?.path
 
-    if (!file) {
-        if (!postText) {
-            return res.status(400).json({ msg: "Please fill text" })
-        }
-        try {
-            const newPost = new postModel({
-                postText: postText,
-                createdBy: createdBy
+    try {
+        const user = await userModel.findOne({ _id: createdBy })
 
+        if (!user) {
+            return res.status(404).json({ msg: "Token not valid" })
+        }
+        if (!file) {
+            if (!postText) {
+                return res.status(400).json({ msg: "Please fill text" })
+            }
+            try {
+                const newPost = new postModel({
+                    postText: postText,
+                    createdBy: createdBy
+
+                })
+                const post = await postModel.create(newPost)
+                user.post.push({ postId: post._id })
+                await user?.save()
+
+                return res.status(200).json({ msg: "success", post, user })
+            } catch (error) {
+                console.log(error)
+            }
+        } else {
+            if (!postText) {
+                return res.status(400).json({ msg: "Please fill text" })
+            }
+            const result = await cloudinary.uploader.upload(file, {
+                folder: "Testing",
+                resource_type: 'auto'
             })
 
-            const user = await userModel.findOne({ _id: createdBy })
+            const newPost = new postModel({
+                postText: postText,
+                images: [{
+                    imageUrl: result.secure_url
+                }],
+                createdBy: createdBy
+            })
 
-            if (!user) {
-                return res.status(404).json({ msg: "Token not valid" })
-            }
             const post = await postModel.create(newPost)
-            user?.post.push({ postId: post._id })
-            await user?.save()
+            user.post.push({ postId: post._id })
 
-            return res.status(200).json({ msg: "success", post, user })
-        } catch (error) {
-            console.log(error)
+            return res.status(200).json({ msg: "success", post })
         }
-    } else {
-        if (!postText) {
-            return res.status(400).json({ msg: "Please fill text" })
-        }
-        const result = await cloudinary.uploader.upload(file, {
-            folder: "Testing",
-            resource_type: 'auto'
-        })
-
-        const newPost = new postModel({
-            postText: postText,
-            images: [{
-                imageUrl: result.secure_url
-            }],
-            createdBy: createdBy
-        })
-
-        const post = await postModel.create(newPost)
-
-        return res.status(200).json({ msg: "success", post })
+    } catch (error) {
+        console.log(error)
     }
 }
 
@@ -106,14 +111,24 @@ const updatePost = async (req: Request, res: Response) => {
                 resource_type: 'auto'
             });
 
-            // Remove the image with the given imageId
-            post.images = post.images.filter(image => image._id.toString() !== imageId);
+            const check = post.images.length !== 0
+            console.log(check)
 
-            // Add the new image URL to the post
-            post.images.push({ imageUrl: result.secure_url });
+            if (check) {
+                // Remove the image with the given imageId
+                post.updateOne({ $pop: { "images._id": imageId } })
+                // Add the new image URL to the post
+                post.images.push({ imageUrl: result.secure_url });
+                await post.save();
+
+                return res.status(200).json({ msg: "Success", post })
+            }
+
+            post.images.push({ imageUrl: result.secure_url })
+            await post.save()
+
 
             // Save the changes to the post
-            await post.save();
         }
 
         if (updateText) {
@@ -130,32 +145,41 @@ const updatePost = async (req: Request, res: Response) => {
 };
 
 const deletePost = async (req: Request, res: Response) => {
-    const { id } = req.params
-    const userId = req.user.userId
+    const { id } = req.params;
+    const userId = req.user.userId;
 
     try {
-        const post = await postModel.findOne({ _id: id })
-
-        if (!post) {
-            return res.status(404).json({ msg: "Post not found or deleted" })
-        }
-
-        const user = await userModel.findOne({ _id: userId })
+        const user = await userModel.findOne({ _id: userId });
 
         if (!user) {
-            return res.status(401).json({ msg: "Token not valid" })
+            return res.status(401).json({ msg: "Token not valid" });
         }
 
-        const checkUser = post.createdBy.toString() === userId;
-        console.log(checkUser)
+        const post = await postModel.findOne({ _id: id });
 
-        if (!checkUser) {
-            return res.status(401).json({ msg: "Only creator can delete this" })
+        if (!post) {
+            return res.status(404).json({ msg: "Post not found or deleted" });
         }
 
+        if (post.createdBy.toString() !== userId) {
+            return res.status(401).json({ msg: "Only the creator can delete this post" });
+        }
+
+        // Delete the post
+        await post.deleteOne();
+
+        // Remove the post from the user's posts array
+        user.post = user.post.filter(postId => postId.toString() !== id);
+
+        // Save the changes to the user
+        await user.save();
+
+        return res.status(200).json({ msg: "Success" });
     } catch (error) {
-        console.log(error)
+        console.error(error);
+        return res.status(500).json({ msg: "Internal Server Error" });
     }
-}
+};
 
-export { createPost, updatePost, getAllPost, getPostById }
+
+export { createPost, updatePost, getAllPost, getPostById, deletePost }
