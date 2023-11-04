@@ -1,3 +1,4 @@
+import { timeStamp } from "console";
 import mongoose, { Types } from "mongoose";
 const { Schema } = mongoose
 
@@ -10,6 +11,7 @@ interface IComment {
 }
 
 interface Image {
+    _id: Types.ObjectId;
     imageUrl: string;
 }
 
@@ -18,7 +20,8 @@ interface IPost {
     images: Image[],
     like: ILike[],
     comment: IComment[],
-    createdBy: Types.ObjectId
+    createdBy: Types.ObjectId,
+    createdDate: Date
 }
 
 const postSchema = new Schema<IPost>({
@@ -26,6 +29,9 @@ const postSchema = new Schema<IPost>({
         type: String,
     },
     images: [{
+        _id: {
+            type: Schema.Types.ObjectId
+        },
         imageUrl: {
             type: String,
         }
@@ -44,7 +50,12 @@ const postSchema = new Schema<IPost>({
     }],
     createdBy: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
+    },
+    createdDate: {
+        type: Date,
+        default: Date.now()
     }
 })
 

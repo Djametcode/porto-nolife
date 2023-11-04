@@ -11,6 +11,9 @@ const postSchema = new Schema({
         type: String,
     },
     images: [{
+            _id: {
+                type: Schema.Types.ObjectId
+            },
             imageUrl: {
                 type: String,
             }
@@ -29,7 +32,12 @@ const postSchema = new Schema({
         }],
     createdBy: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
+    },
+    createdDate: {
+        type: Date,
+        default: Date.now()
     }
 });
 exports.postModel = mongoose_1.default.model("Post", postSchema);

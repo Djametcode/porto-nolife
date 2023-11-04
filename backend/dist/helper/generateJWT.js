@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateJWT = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const generateJWT = (data) => {
-    const token = jsonwebtoken_1.default.sign({ userId: data.id, email: data.email, username: data.username }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_TIMES });
+    const token = jsonwebtoken_1.default.sign({ userId: data.id, email: data.email }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_TIMES });
     return token;
 };
 exports.generateJWT = generateJWT;

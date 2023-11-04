@@ -13,16 +13,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv/config");
+const cloudinary_1 = require("cloudinary");
 const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 //database connect
 const connectDB_1 = require("./db/connectDB");
 const authRoute_1 = require("./route/authRoute");
+const postRoute_1 = require("./route/postRoute");
+cloudinary_1.v2.config({
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET,
+    cloud_name: process.env.CLOUD_NAME
+});
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-app.use(express_1.default.urlencoded({ extended: false, limit: 10000000 }));
-app.use('/api/v17/no-life', authRoute_1.authRouter);
+app.use(express_1.default.urlencoded({ extended: false }));
+app.use('/api/v17/no-life/auth', authRoute_1.authRouter);
+app.use('/api/v17/no-life/post', postRoute_1.postRouter);
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, connectDB_1.connectDB)(process.env.MONGO_URL);
