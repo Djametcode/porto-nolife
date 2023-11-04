@@ -51,7 +51,8 @@ const createPost = async (req: Request, res: Response) => {
             })
 
             const post = await postModel.create(newPost)
-            user.post.push({ postId: post._id })
+            await user.post.push({ postId: post._id })
+            await user.save()
 
             return res.status(200).json({ msg: "success", post })
         }
