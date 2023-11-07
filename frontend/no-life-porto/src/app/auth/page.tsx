@@ -1,6 +1,31 @@
+"use client";
+
+import { loginHandler } from "@/handler/loginHandlet";
+import { useState } from "react";
 import { FaFacebookSquare } from "react-icons/fa";
 
 export default function AuthComponent() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const data = {
+    email: email,
+    password: password,
+  };
+
+  console.log(data);
+
+  const loginUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await loginHandler(data);
+      console.log(response);
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <form className=" flex flex-col w-[350px] gap-5" action="">
       <div className=" flex flex-col gap-4">
@@ -8,11 +33,19 @@ export default function AuthComponent() {
           className=" p-3 rounded-lg text-sm bg-transparent border-[0.5px] focus:outline-none"
           type="email"
           placeholder="Email"
+          value={email}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setEmail(e.target.value)
+          }
         />
         <input
           className=" p-3 rounded-lg text-sm bg-transparent border-[0.5px] focus:outline-none"
           type="password"
           placeholder="Password"
+          value={password}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setPassword(e.target.value)
+          }
         />
       </div>
       <div className=" flex justify-end">
@@ -21,7 +54,12 @@ export default function AuthComponent() {
         </p>
       </div>
       <div className=" bg-blue-400 p-3 rounded-lg flex justify-center">
-        <button className=" text-sm">Login</button>
+        <button
+          onClick={(e: React.FormEvent) => loginUser(e)}
+          className=" text-sm font-extrabold"
+        >
+          Login
+        </button>
       </div>
       <div className=" flex justify-center w-full gap-4 items-center p-3">
         <hr className=" w-full" />
