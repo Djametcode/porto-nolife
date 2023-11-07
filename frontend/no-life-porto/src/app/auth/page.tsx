@@ -3,6 +3,7 @@
 import { loginHandler } from "@/handler/loginHandlet";
 import { useState } from "react";
 import { FaFacebookSquare } from "react-icons/fa";
+import Cookies from "js-cookie";
 
 export default function AuthComponent() {
   const [email, setEmail] = useState("");
@@ -22,6 +23,7 @@ export default function AuthComponent() {
       console.log(response);
       setEmail("");
       setPassword("");
+      Cookies.set("token", response.token);
     } catch (error) {
       console.log(error);
     }
