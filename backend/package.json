@@ -5,8 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon ./prod/app.js",
-    "start": "node src/prod/app.js",
-    "prebuild": "mv node_modules prod"
+    "start": "node src/prod/app.js"
   },
   "keywords": [],
   "author": "",
