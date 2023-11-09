@@ -3,7 +3,7 @@ import { v2 as cloudinary } from 'cloudinary'
 import cors from 'cors'
 import express from 'express'
 const app = express();
-const port = 3000 || process.env.
+const port = 3000 || process.env.PORT
 
 //database connect
 import { connectDB } from './db/connectDB';
@@ -25,7 +25,7 @@ app.use('/api/v17/no-life/post', postRouter)
 const startServer = async () => {
     try {
         await connectDB(process.env.MONGO_URL)
-        app.listen(3000, () => console.log("Sever running"))
+        app.listen(port, () => console.log("Sever running"))
     } catch (error) {
         console.log(error)
     }

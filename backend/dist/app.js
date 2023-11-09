@@ -17,6 +17,7 @@ const cloudinary_1 = require("cloudinary");
 const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
+const port = 3000 || process.env.PORT;
 //database connect
 const connectDB_1 = require("./db/connectDB");
 const authRoute_1 = require("./route/authRoute");
@@ -34,7 +35,7 @@ app.use('/api/v17/no-life/post', postRoute_1.postRouter);
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, connectDB_1.connectDB)(process.env.MONGO_URL);
-        app.listen(3000, () => console.log("Sever running"));
+        app.listen(port, () => console.log("Sever running"));
     }
     catch (error) {
         console.log(error);
