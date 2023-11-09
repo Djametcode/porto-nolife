@@ -8,7 +8,7 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "Node",
     "rootDir": "./src",
-    "outDir": "./prod",
+    "outDir": "./dist",
 
     /* Type Checking */
     "strict": true,
