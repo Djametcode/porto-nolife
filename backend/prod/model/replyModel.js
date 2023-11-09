@@ -1,5 +1,11 @@
-import mongoose from "mongoose";
-const { Schema } = mongoose;
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.replyModel = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
+const { Schema } = mongoose_1.default;
 const replySchema = new Schema({
     commentId: {
         type: Schema.Types.ObjectId,
@@ -20,4 +26,4 @@ const replySchema = new Schema({
             }
         }]
 });
-export const replyModel = mongoose.model("Reply", replySchema);
+exports.replyModel = mongoose_1.default.model("Reply", replySchema);

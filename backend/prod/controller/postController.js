@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,19 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { v2 as cloudinary } from 'cloudinary';
-import { postModel } from "../model/postModel";
-import { userModel } from "../model/userModel";
-import { likeModel } from "../model/likeModel";
-import { commentModel } from "../model/commentModel";
-import { replyModel } from "../model/replyModel";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getCommentByPostId = exports.deleteComment = exports.deleteReply = exports.replyComment = exports.unLikeComment = exports.likeComment = exports.commentPost = exports.unLikePost = exports.likePost = exports.deletePost = exports.getPostById = exports.getAllPost = exports.updatePost = exports.createPost = void 0;
+const cloudinary_1 = require("cloudinary");
+const postModel_1 = require("../model/postModel");
+const userModel_1 = require("../model/userModel");
+const likeModel_1 = require("../model/likeModel");
+const commentModel_1 = require("../model/commentModel");
+const replyModel_1 = require("../model/replyModel");
 const createPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const createdBy = req.user.userId;
     const { postText } = req.body;
     let file = (_a = req.file) === null || _a === void 0 ? void 0 : _a.path;
     try {
-        const user = yield userModel.findOne({ _id: createdBy });
+        const user = yield userModel_1.userModel.findOne({ _id: createdBy });
         if (!user) {
             return res.status(404).json({ msg: "Token not valid" });
         }
@@ -27,11 +30,11 @@ const createPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             if (!postText) {
                 return res.status(400).json({ msg: "Please fill text" });
             }
-            const newPost = new postModel({
+            const newPost = new postModel_1.postModel({
                 postText: postText,
                 createdBy: createdBy
             });
-            const post = yield postModel.create(newPost);
+            const post = yield postModel_1.postModel.create(newPost);
             user.post.push({ postId: post._id });
             yield (user === null || user === void 0 ? void 0 : user.save());
             return res.status(200).json({ msg: "success", post, user });
@@ -39,18 +42,18 @@ const createPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!postText) {
             return res.status(400).json({ msg: "Please fill text" });
         }
-        const result = yield cloudinary.uploader.upload(file, {
+        const result = yield cloudinary_1.v2.uploader.upload(file, {
             folder: "Testing",
             resource_type: 'auto'
         });
-        const newPost = new postModel({
+        const newPost = new postModel_1.postModel({
             postText: postText,
             images: [{
                     imageUrl: result.secure_url
                 }],
             createdBy: createdBy
         });
-        const post = yield postModel.create(newPost);
+        const post = yield postModel_1.postModel.create(newPost);
         user === null || user === void 0 ? void 0 : user.post.push({ postId: post._id });
         user === null || user === void 0 ? void 0 : user.save();
         return res.status(200).json({ msg: "success", post });
@@ -59,19 +62,21 @@ const createPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         console.log(error);
     }
 });
+exports.createPost = createPost;
 const getAllPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const post = yield postModel.find({}).populate({ path: "createdBy", select: ["username", "avatar"] }).populate({ path: "like.likeId", populate: { path: "createdBy", select: ["_id", "username"] } });
+        const post = yield postModel_1.postModel.find({}).populate({ path: "createdBy", select: ["username", "avatar"] }).populate({ path: "like.likeId", populate: { path: "createdBy", select: ["_id", "username"] } });
         return res.status(200).json({ msg: "success", post });
     }
     catch (error) {
         console.log(error);
     }
 });
+exports.getAllPost = getAllPost;
 const getPostById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        const post = yield postModel.findOne({ _id: id });
+        const post = yield postModel_1.postModel.findOne({ _id: id });
         if (!post) {
             return res.status(404).json({ msg: "Fail, post not found" });
         }
@@ -80,13 +85,14 @@ const getPostById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         console.log(error);
     }
 });
+exports.getPostById = getPostById;
 const updatePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdBy = req.user.userId;
     const { updateText } = req.body;
     const { id, imageId } = req.query;
     let file = req.file ? req.file.path : null; // Check if req.file is available
     try {
-        const post = yield postModel.findOne({ _id: id });
+        const post = yield postModel_1.postModel.findOne({ _id: id });
         if (!post) {
             return res.status(404).json({ msg: "Post not found" });
         }
@@ -98,7 +104,7 @@ const updatePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         if (file) {
             // If a file is provided, upload it to cloudinary
-            const result = yield cloudinary.uploader.upload(file, {
+            const result = yield cloudinary_1.v2.uploader.upload(file, {
                 folder: "Testing",
                 resource_type: 'auto'
             });
@@ -128,22 +134,23 @@ const updatePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.status(500).json({ msg: "Internal Server Error" });
     }
 });
+exports.updatePost = updatePost;
 const deletePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const userId = req.user.userId;
     try {
-        const user = yield userModel.findOne({ _id: userId });
+        const user = yield userModel_1.userModel.findOne({ _id: userId });
         if (!user) {
             return res.status(401).json({ msg: "Token not valid" });
         }
-        const post = yield postModel.findOne({ _id: id });
+        const post = yield postModel_1.postModel.findOne({ _id: id });
         if (!post) {
             return res.status(404).json({ msg: "Post not found or deleted" });
         }
         if (post.createdBy.toString() !== userId) {
             return res.status(401).json({ msg: "Only the creator can delete this post" });
         }
-        const deletedPost = yield postModel.findOneAndDelete({ _id: id });
+        const deletedPost = yield postModel_1.postModel.findOneAndDelete({ _id: id });
         const postIndex = user.post.findIndex((item) => item.postId.equals(id));
         console.log(postIndex);
         user.post.splice(postIndex, 1);
@@ -155,25 +162,26 @@ const deletePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.status(500).json({ msg: "Internal Server Error" });
     }
 });
+exports.deletePost = deletePost;
 const likePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const userId = req.user.userId;
     try {
-        const user = yield userModel.findOne({ _id: userId });
+        const user = yield userModel_1.userModel.findOne({ _id: userId });
         if (!user) {
             return res.status(401).json({ msg: 'Token invalid' });
         }
-        const post = yield postModel.findOne({ _id: id });
-        const check = yield likeModel.findOne({ postId: id, createdBy: userId });
+        const post = yield postModel_1.postModel.findOne({ _id: id });
+        const check = yield likeModel_1.likeModel.findOne({ postId: id, createdBy: userId });
         console.log(check);
         if (check) {
             return res.status(400).json({ msg: "You only can like once :3" });
         }
-        const newLike = new likeModel({
+        const newLike = new likeModel_1.likeModel({
             postId: id,
             createdBy: userId
         });
-        const like = yield likeModel.create(newLike);
+        const like = yield likeModel_1.likeModel.create(newLike);
         post === null || post === void 0 ? void 0 : post.like.push({ likeId: like._id });
         yield (post === null || post === void 0 ? void 0 : post.save());
         return res.status(200).json({ msg: "Success like post", post });
@@ -182,11 +190,12 @@ const likePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         console.log(error);
     }
 });
+exports.likePost = likePost;
 const unLikePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { likeId, postId } = req.query;
     try {
-        const like = yield likeModel.findOneAndDelete({ _id: likeId });
-        const post = yield postModel.findOne({ _id: postId });
+        const like = yield likeModel_1.likeModel.findOneAndDelete({ _id: likeId });
+        const post = yield postModel_1.postModel.findOne({ _id: postId });
         const likeIndex = post === null || post === void 0 ? void 0 : post.like.findIndex((item) => item.likeId.equals(like === null || like === void 0 ? void 0 : like._id));
         console.log(likeIndex);
         if (likeIndex != -1 && likeIndex != undefined) {
@@ -200,6 +209,7 @@ const unLikePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         console.log(error);
     }
 });
+exports.unLikePost = unLikePost;
 const commentPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id: postId } = req.params;
     const userId = req.user.userId;
@@ -208,16 +218,16 @@ const commentPost = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res.status(400).json({ msg: "Please provide comment text" });
     }
     try {
-        const post = yield postModel.findOne({ _id: postId });
+        const post = yield postModel_1.postModel.findOne({ _id: postId });
         if (!post) {
             return res.status(404).json({ msg: "Post not found or deleted" });
         }
-        const newComment = new commentModel({
+        const newComment = new commentModel_1.commentModel({
             commentText: commentText,
             createdBy: userId,
             postId: postId
         });
-        const comment = yield commentModel.create(newComment);
+        const comment = yield commentModel_1.commentModel.create(newComment);
         post.comment.push({ commentId: comment._id });
         yield post.save();
         return res.status(200).json({ msg: "success", comment });
@@ -226,19 +236,20 @@ const commentPost = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         console.log(error);
     }
 });
+exports.commentPost = commentPost;
 const deleteComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { postId, commentId } = req.query;
     const userId = req.user.userId;
     try {
-        const user = yield userModel.findOne({ _id: userId });
+        const user = yield userModel_1.userModel.findOne({ _id: userId });
         if (!user) {
             return res.status(401).json({ msg: "Token invalid" });
         }
-        const post = yield postModel.findOne({ _id: postId });
+        const post = yield postModel_1.postModel.findOne({ _id: postId });
         if (!post) {
             return res.status(404).json({ msg: "Post not found or already deleted" });
         }
-        const comment = yield commentModel.findOneAndDelete({ _id: commentId });
+        const comment = yield commentModel_1.commentModel.findOneAndDelete({ _id: commentId });
         const checkOwner = (comment === null || comment === void 0 ? void 0 : comment.createdBy.toString()) === userId;
         if (!checkOwner) {
             return res.status(401).json({ msg: "Only comment owner can delete this" });
@@ -255,15 +266,16 @@ const deleteComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         console.log(error);
     }
 });
+exports.deleteComment = deleteComment;
 const likeComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id: commentId } = req.params;
     const userId = req.user.userId;
     try {
-        const user = yield userModel.findOne({ _id: userId });
+        const user = yield userModel_1.userModel.findOne({ _id: userId });
         if (!user) {
             return res.status(401).json({ msg: "Token invalid" });
         }
-        const comment = yield commentModel.findOne({ _id: commentId });
+        const comment = yield commentModel_1.commentModel.findOne({ _id: commentId });
         if (!comment) {
             return res.status(404).json({ msg: "comment not found" });
         }
@@ -280,15 +292,16 @@ const likeComment = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         console.log(error);
     }
 });
+exports.likeComment = likeComment;
 const unLikeComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id: commentId } = req.params;
     const userId = req.user.userId;
     try {
-        const user = yield userModel.findOne({ _id: userId });
+        const user = yield userModel_1.userModel.findOne({ _id: userId });
         if (!user) {
             return res.status(401).json({ msg: "Token invalid" });
         }
-        const comment = yield commentModel.findOne({ _id: commentId });
+        const comment = yield commentModel_1.commentModel.findOne({ _id: commentId });
         console.log(comment);
         const likeIndex = comment === null || comment === void 0 ? void 0 : comment.commentLike.findIndex((item) => item.createdBy.equals(userId));
         console.log(likeIndex);
@@ -303,6 +316,7 @@ const unLikeComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         console.log(error);
     }
 });
+exports.unLikeComment = unLikeComment;
 const replyComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id: commentId } = req.params;
     const userId = req.user.userId;
@@ -311,16 +325,16 @@ const replyComment = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         return res.status(400).json({ msg: "Please provide reply text" });
     }
     try {
-        const comment = yield commentModel.findOne({ _id: commentId });
+        const comment = yield commentModel_1.commentModel.findOne({ _id: commentId });
         if (!comment) {
             return res.status(404).json({ msg: "comment not found or already deleted" });
         }
-        const newReply = new replyModel({
+        const newReply = new replyModel_1.replyModel({
             replyText: replyText,
             commentId: commentId,
             createdBy: userId
         });
-        const reply = yield replyModel.create(newReply);
+        const reply = yield replyModel_1.replyModel.create(newReply);
         comment.commentReply.push({ replyId: reply._id });
         yield comment.save();
         return res.status(200).json({ msg: "success", comment });
@@ -328,25 +342,26 @@ const replyComment = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
     }
 });
+exports.replyComment = replyComment;
 const deleteReply = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { commentId, replyId } = req.query;
     const userId = req.user.userId;
     try {
-        const user = yield userModel.findOne({ _id: userId });
+        const user = yield userModel_1.userModel.findOne({ _id: userId });
         if (!user) {
             return res.status(401).json({ msg: "Token invalid" });
         }
-        const comment = yield commentModel.findOne({ _id: commentId });
+        const comment = yield commentModel_1.commentModel.findOne({ _id: commentId });
         if (!comment) {
             return res.status(404).json({ msg: "comment not found or deleted" });
         }
-        const ownerReply = yield replyModel.findOne({ _id: replyId });
+        const ownerReply = yield replyModel_1.replyModel.findOne({ _id: replyId });
         const ownerCheck = (ownerReply === null || ownerReply === void 0 ? void 0 : ownerReply.createdBy.toString()) === userId;
         console.log(ownerCheck);
         if (!ownerCheck) {
             return res.status(401).json({ msg: "Only reply owner can delete this" });
         }
-        const reply = yield replyModel.findOneAndDelete({ commentId: commentId, createdBy: userId });
+        const reply = yield replyModel_1.replyModel.findOneAndDelete({ commentId: commentId, createdBy: userId });
         if (!reply) {
             return res.status(400).json({ msg: "reply already deleted", comment });
         }
@@ -362,14 +377,15 @@ const deleteReply = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         console.log(error);
     }
 });
+exports.deleteReply = deleteReply;
 const getCommentByPostId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id: postId } = req.params;
     try {
-        const comment = yield commentModel.find({ postId: postId }).populate({ path: "createdBy", select: ["username", "avatar"] });
+        const comment = yield commentModel_1.commentModel.find({ postId: postId }).populate({ path: "createdBy", select: ["username", "avatar"] });
         return res.status(200).json({ msg: "Success", comment });
     }
     catch (error) {
         console.log(error);
     }
 });
-export { createPost, updatePost, getAllPost, getPostById, deletePost, likePost, unLikePost, commentPost, likeComment, unLikeComment, replyComment, deleteReply, deleteComment, getCommentByPostId };
+exports.getCommentByPostId = getCommentByPostId;

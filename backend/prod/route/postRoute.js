@@ -1,0 +1,26 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.postRouter = void 0;
+const express_1 = __importDefault(require("express"));
+const postController_1 = require("../controller/postController");
+const auth_1 = require("../middleware/auth");
+const multer_1 = require("../middleware/multer");
+const router = express_1.default.Router();
+router.post('/create-post', auth_1.authMiddleware, multer_1.upload, postController_1.createPost);
+router.put('/update-post', auth_1.authMiddleware, multer_1.upload, postController_1.updatePost);
+router.get('/get-all-post', postController_1.getAllPost);
+router.get('/get-post/:id', postController_1.getPostById);
+router.delete('/delete-post/:id', auth_1.authMiddleware, postController_1.deletePost);
+router.post('/like-post/:id', auth_1.authMiddleware, postController_1.likePost);
+router.delete('/unlike-post', auth_1.authMiddleware, postController_1.unLikePost);
+router.post('/comment-post/:id', auth_1.authMiddleware, postController_1.commentPost);
+router.delete('/delete-comment', auth_1.authMiddleware, postController_1.deleteComment);
+router.post('/like-comment/:id', auth_1.authMiddleware, postController_1.likeComment);
+router.put('/unlike-comment/:id', auth_1.authMiddleware, postController_1.unLikeComment);
+router.post('/reply-comment/:id', auth_1.authMiddleware, postController_1.replyComment);
+router.delete('/delete-reply', auth_1.authMiddleware, postController_1.deleteReply);
+router.get('/comment/:id', auth_1.authMiddleware, postController_1.getCommentByPostId);
+exports.postRouter = router;
