@@ -1,11 +1,5 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.likeModel = void 0;
-const mongoose_1 = __importDefault(require("mongoose"));
-const { Schema } = mongoose_1.default;
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 const likeSchema = new Schema({
     postId: {
         type: Schema.Types.ObjectId,
@@ -16,4 +10,4 @@ const likeSchema = new Schema({
         ref: 'User'
     }
 });
-exports.likeModel = mongoose_1.default.model("Like", likeSchema);
+export const likeModel = mongoose.model("Like", likeSchema);

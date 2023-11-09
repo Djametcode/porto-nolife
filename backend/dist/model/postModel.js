@@ -1,11 +1,5 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.postModel = void 0;
-const mongoose_1 = __importDefault(require("mongoose"));
-const { Schema } = mongoose_1.default;
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 const postSchema = new Schema({
     postText: {
         type: String,
@@ -37,4 +31,4 @@ const postSchema = new Schema({
         default: Date.now()
     }
 });
-exports.postModel = mongoose_1.default.model("Post", postSchema);
+export const postModel = mongoose.model("Post", postSchema);
