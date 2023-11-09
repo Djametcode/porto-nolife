@@ -33,14 +33,13 @@ app.use("/api/v17/no-life/auth", authRouter);
 app.use("/api/v17/no-life/post", postRouter);
 
 const mongo_url = configSchema.parse(process.env);
-console.log(mongo_url);
 
 const startServer = async () => {
   try {
     if (!mongo_url) {
       console.log("Validate error");
     }
-    await connectDB(process.env.MONGO_URL);
+    await connectDB(mongo_url.MONGO_URL);
     app.listen(port, () => console.log("Sever running"));
   } catch (error) {
     console.log(error);

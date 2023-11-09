@@ -45,7 +45,10 @@ const mongo_url = configSchema.parse(process.env);
 console.log(mongo_url);
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, connectDB_1.connectDB)(process.env.MONGO_URL);
+        if (!mongo_url) {
+            console.log("Validate error");
+        }
+        yield (0, connectDB_1.connectDB)(mongo_url.MONGO_URL);
         app.listen(port, () => console.log("Sever running"));
     }
     catch (error) {
