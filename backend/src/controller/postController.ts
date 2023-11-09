@@ -31,7 +31,7 @@ const createPost = async (req: Request, res: Response) => {
                 await user?.save()
 
             return res.status(200).json({ msg: "success", post, user })
-        } else {
+        } 
             if (!postText) {
                 return res.status(400).json({ msg: "Please fill text" })
             }
@@ -52,8 +52,7 @@ const createPost = async (req: Request, res: Response) => {
             user?.post.push({ postId: post._id })
             user?.save()
 
-            return res.status(200).json({ msg: "success", post })
-        }
+        return res.status(200).json({ msg: "success", post })
     } catch (error) {
         console.log(error)
     }
@@ -61,7 +60,7 @@ const createPost = async (req: Request, res: Response) => {
 
 const getAllPost = async (req: Request, res: Response) => {
     try {
-        const post = await postModel.find({})
+        const post = await postModel.find({}).populate({ path: "createdBy", select: ["username", "avatar"] }).populate({ path: "like.likeId", populate: { path: "createdBy", select: ["_id", "username"] } })
 
         return res.status(200).json({ msg: "success", post })
     } catch (error) {
@@ -451,6 +450,17 @@ const deleteReply = async (req: Request, res: Response) => {
     }
 }
 
+const getCommentByPostId = async (req: Request, res: Response) => {
+    const { id: postId } = req.params
+    try {
+        const comment = await commentModel.find({ postId: postId }).populate({ path: "createdBy", select: ["username", "avatar"] })
+
+        return res.status(200).json({ msg: "Success", comment })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export {
     createPost,
     updatePost,
@@ -464,5 +474,6 @@ export {
     unLikeComment,
     replyComment,
     deleteReply,
-    deleteComment
+    deleteComment,
+    getCommentByPostId
 }

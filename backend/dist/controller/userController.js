@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateAvatar = exports.deleteAccount = void 0;
+exports.getCurrentUser = exports.updateAvatar = exports.deleteAccount = void 0;
 const userModel_1 = require("../model/userModel");
 const cloudinary_1 = require("cloudinary");
 const postModel_1 = require("../model/postModel");
@@ -56,12 +56,24 @@ const updateAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             folder: "Testing",
             resource_type: 'auto'
         });
-        user.updateOne({ $set: { avatar: result.secure_url } });
-        yield user.save();
-        return res.status(200).json({ msg: "success", user });
+        const updatedUser = yield userModel_1.userModel.findOneAndUpdate({ _id: userId }, { avatar: result.secure_url }, { new: true });
+        return res.status(200).json({ msg: "success", updatedUser });
     }
     catch (error) {
         console.log(error);
     }
 });
 exports.updateAvatar = updateAvatar;
+const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield userModel_1.userModel.findOne({ _id: req.user.userId });
+        if (!user) {
+            return res.status(401).json({ msg: "Token invalid" });
+        }
+        return res.status(200).json({ msg: "Success", user });
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.getCurrentUser = getCurrentUser;

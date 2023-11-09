@@ -58,13 +58,27 @@ const updateAvatar = async (req: Request, res: Response) => {
             resource_type: 'auto'
         })
 
-        user.updateOne({ $set: { avatar: result.secure_url } })
-        await user.save()
+        const updatedUser = await userModel.findOneAndUpdate({ _id: userId }, { avatar: result.secure_url }, { new: true })
 
-        return res.status(200).json({ msg: "success", user })
+        return res.status(200).json({ msg: "success", updatedUser })
     } catch (error) {
         console.log(error)
     }
 }
 
-export { deleteAccount, updateAvatar }
+const getCurrentUser = async (req: Request, res: Response) => {
+    try {
+        const user = await userModel.findOne({ _id: req.user.userId })
+
+        if (!user) {
+            return res.status(401).json({ msg: "Token invalid" })
+        }
+
+        return res.status(200).json({ msg: "Success", user })
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+export { deleteAccount, updateAvatar, getCurrentUser }

@@ -24,6 +24,7 @@ export default function AuthComponent() {
       setEmail("");
       setPassword("");
       Cookies.set("token", response.token);
+      Cookies.set("userId", response.user._id);
     } catch (error) {
       console.log(error);
     }

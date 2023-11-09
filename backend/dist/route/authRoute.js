@@ -14,4 +14,5 @@ route.post('/regist-user', authController_1.registUser);
 route.post('/login-user', authController_1.loginUser);
 route.patch("/update-avatar", auth_1.authMiddleware, multer_1.upload, userController_1.updateAvatar);
 route.delete('/delete-account', auth_1.authMiddleware, userController_1.deleteAccount);
+route.get('/current-user', auth_1.authMiddleware, userController_1.getCurrentUser);
 exports.authRouter = route;

@@ -1,5 +1,5 @@
 import express from 'express'
-import { commentPost, createPost, deleteComment, deletePost, deleteReply, getAllPost, getPostById, likeComment, likePost, replyComment, unLikeComment, unLikePost, updatePost } from '../controller/postController'
+import { commentPost, createPost, deleteComment, deletePost, deleteReply, getAllPost, getCommentByPostId, getPostById, likeComment, likePost, replyComment, unLikeComment, unLikePost, updatePost } from '../controller/postController'
 import { authMiddleware } from '../middleware/auth'
 import { upload } from '../middleware/multer'
 const router = express.Router()
@@ -17,5 +17,6 @@ router.post('/like-comment/:id', authMiddleware, likeComment)
 router.put('/unlike-comment/:id', authMiddleware, unLikeComment)
 router.post('/reply-comment/:id', authMiddleware, replyComment)
 router.delete('/delete-reply', authMiddleware, deleteReply)
+router.get('/comment/:id', authMiddleware, getCommentByPostId)
 
 export const postRouter = router

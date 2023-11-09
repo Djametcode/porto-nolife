@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteComment = exports.deleteReply = exports.replyComment = exports.unLikeComment = exports.likeComment = exports.commentPost = exports.unLikePost = exports.likePost = exports.deletePost = exports.getPostById = exports.getAllPost = exports.updatePost = exports.createPost = void 0;
+exports.getCommentByPostId = exports.deleteComment = exports.deleteReply = exports.replyComment = exports.unLikeComment = exports.likeComment = exports.commentPost = exports.unLikePost = exports.likePost = exports.deletePost = exports.getPostById = exports.getAllPost = exports.updatePost = exports.createPost = void 0;
 const cloudinary_1 = require("cloudinary");
 const postModel_1 = require("../model/postModel");
 const userModel_1 = require("../model/userModel");
@@ -39,26 +39,24 @@ const createPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             yield (user === null || user === void 0 ? void 0 : user.save());
             return res.status(200).json({ msg: "success", post, user });
         }
-        else {
-            if (!postText) {
-                return res.status(400).json({ msg: "Please fill text" });
-            }
-            const result = yield cloudinary_1.v2.uploader.upload(file, {
-                folder: "Testing",
-                resource_type: 'auto'
-            });
-            const newPost = new postModel_1.postModel({
-                postText: postText,
-                images: [{
-                        imageUrl: result.secure_url
-                    }],
-                createdBy: createdBy
-            });
-            const post = yield postModel_1.postModel.create(newPost);
-            user === null || user === void 0 ? void 0 : user.post.push({ postId: post._id });
-            user === null || user === void 0 ? void 0 : user.save();
-            return res.status(200).json({ msg: "success", post });
+        if (!postText) {
+            return res.status(400).json({ msg: "Please fill text" });
         }
+        const result = yield cloudinary_1.v2.uploader.upload(file, {
+            folder: "Testing",
+            resource_type: 'auto'
+        });
+        const newPost = new postModel_1.postModel({
+            postText: postText,
+            images: [{
+                    imageUrl: result.secure_url
+                }],
+            createdBy: createdBy
+        });
+        const post = yield postModel_1.postModel.create(newPost);
+        user === null || user === void 0 ? void 0 : user.post.push({ postId: post._id });
+        user === null || user === void 0 ? void 0 : user.save();
+        return res.status(200).json({ msg: "success", post });
     }
     catch (error) {
         console.log(error);
@@ -67,7 +65,7 @@ const createPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.createPost = createPost;
 const getAllPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const post = yield postModel_1.postModel.find({});
+        const post = yield postModel_1.postModel.find({}).populate({ path: "createdBy", select: ["username", "avatar"] }).populate({ path: "like.likeId", populate: { path: "createdBy", select: ["_id", "username"] } });
         return res.status(200).json({ msg: "success", post });
     }
     catch (error) {
@@ -380,3 +378,14 @@ const deleteReply = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.deleteReply = deleteReply;
+const getCommentByPostId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id: postId } = req.params;
+    try {
+        const comment = yield commentModel_1.commentModel.find({ postId: postId }).populate({ path: "createdBy", select: ["username", "avatar"] });
+        return res.status(200).json({ msg: "Success", comment });
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.getCommentByPostId = getCommentByPostId;
