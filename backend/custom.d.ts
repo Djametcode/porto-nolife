@@ -9,6 +9,7 @@ declare global {
             CLOUD_NAME: string;
             API_KEY: string;
             API_SECRET: string;
+            POST: number
         }
     }
     namespace Express {

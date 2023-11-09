@@ -1,8 +1,9 @@
 import 'dotenv/config'
 import { v2 as cloudinary } from 'cloudinary'
 import cors from 'cors'
-import express, { Response, response } from 'express'
+import express from 'express'
 const app = express();
+const port = 3000 || process.env.
 
 //database connect
 import { connectDB } from './db/connectDB';
