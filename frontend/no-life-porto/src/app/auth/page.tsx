@@ -4,10 +4,13 @@ import { loginHandler } from "@/handler/loginHandlet";
 import { useState } from "react";
 import { FaFacebookSquare } from "react-icons/fa";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 export default function AuthComponent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const router = useRouter();
 
   const data = {
     email: email,
@@ -25,6 +28,8 @@ export default function AuthComponent() {
       setPassword("");
       Cookies.set("token", response.token);
       Cookies.set("userId", response.user._id);
+
+      router.push("/landing");
     } catch (error) {
       console.log(error);
     }
