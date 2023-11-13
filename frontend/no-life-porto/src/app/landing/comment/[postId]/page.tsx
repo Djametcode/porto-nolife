@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
 import capitalizeName from "@/handler/capitalizeName";
+import { commentPostHandler } from "@/handler/commentPost";
 import { getCommentPost } from "@/handler/getCommentPost";
 import { getCurrentUser } from "@/handler/getCurrentUser";
 import { useParams, useSelectedLayoutSegment } from "next/navigation";
@@ -32,7 +34,12 @@ const CommentComponent = () => {
     username: "",
     avatar: "",
   });
+
+  const [counter, setCounter] = useState<number>(0);
   console.log(comment);
+
+  const [commentText, setCommentText] = useState<string>("");
+  console.log(commentText);
 
   const getAllComment = async () => {
     try {
@@ -59,10 +66,21 @@ const CommentComponent = () => {
     }
   };
 
+  const postComment = async () => {
+    try {
+      const response = await commentPostHandler(postId.postId, commentText);
+      setCounter((prev) => prev + 1);
+      setCommentText("");
+      return response?.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getAllComment();
     getUser();
-  }, []);
+  }, [counter]);
   return (
     <div className=" fixed bottom-0 h-[850px] rounded-tr-3xl rounded-tl-3xl w-full z-50 bg-slate-200 p-3">
       <div className=" flex justify-center w-full font-figtree p-3">
@@ -98,21 +116,33 @@ const CommentComponent = () => {
           );
         })}
       </div>
-      <div className=" absolute bottom-5">
-        <div className=" w-full flex justify-start gap-7">
-          <div className=" w-[50px] h-[50x]">
+      <div className="absolute bottom-5 w-full">
+        <div className="w-full flex justify-start items-center gap-7 h-14">
+          <div className="h-full">
             <img
-              className=" w-full h-full rounded-full"
+              className="w-full h-full rounded-full object-cover"
               src={user.avatar}
               alt=""
             />
           </div>
-          <div className="">
+          <div className="h-full flex items-center">
             <input
-              className=" w-[275px] h-[50px] pl-3 rounded-lg text-sm focus:outline-none"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setCommentText(e.target.value)
+              }
+              className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none"
               type="text"
               placeholder={`Add comment`}
+              value={commentText}
             />
+          </div>
+          <div className="h-full flex items-center">
+            <button
+              onClick={postComment}
+              className="w-full px-3 py-2 bg-blue-500 text-white rounded-lg"
+            >
+              Send
+            </button>
           </div>
         </div>
       </div>
