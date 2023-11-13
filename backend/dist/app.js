@@ -48,7 +48,7 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
             console.log("Validate error");
         }
         yield (0, connectDB_1.connectDB)(mongo_url.MONGO_URL);
-        app.listen(port, () => console.log("Sever running"));
+        app.listen(process.env.PORT || 3000);
     }
     catch (error) {
         console.log(error);

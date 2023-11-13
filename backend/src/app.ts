@@ -40,7 +40,7 @@ const startServer = async () => {
       console.log("Validate error");
     }
     await connectDB(mongo_url.MONGO_URL);
-    app.listen(port, () => console.log("Sever running"));
+    app.listen(process.env.PORT || 3000);
   } catch (error) {
     console.log(error);
   }
