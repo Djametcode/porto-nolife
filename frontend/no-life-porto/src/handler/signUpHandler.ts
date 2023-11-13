@@ -8,7 +8,7 @@ interface IRegist {
 
 export const signUpHandler = async (data: IRegist) => {
     try {
-        const response = await axios.post('http://154.26.156.162:3000/api/v17/no-life/auth/regist-user', data)
+        const response = await axios.post('https://backend-no-life-3678e78f1666.herokuapp.com//api/v17/no-life/auth/regist-user', data)
         return response.data
     } catch (error) {
         console.log(error)
