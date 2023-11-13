@@ -8,7 +8,7 @@ export const getAllPostHandler = async () => {
         return "Token not found"
     }
     try {
-        const response = await axios.get('https://backend-no-life-3678e78f1666.herokuapp.com//api/v17/no-life/post/get-all-post', {
+        const response = await axios.get('https://backend-no-life-3678e78f1666.herokuapp.com/api/v17/no-life/post/get-all-post', {
             headers: {
                 Authorization: `Bearer ${token}`
             }
