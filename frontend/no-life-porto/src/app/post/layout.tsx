@@ -1,10 +1,13 @@
 "use client";
 
 import NavbarComponent from "@/component/navbar";
-import NavbarTopComponent from "@/component/navbarTop";
-import StoryComponent from "@/component/story";
 import { getCurrentUser } from "@/handler/getCurrentUser";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { IoClose } from "react-icons/io5";
+
+interface Children {
+  children: React.ReactNode;
+}
 
 interface IUser {
   username: string;
@@ -19,8 +22,9 @@ interface IResponse {
   };
 }
 
-const LandingLayout = ({ children }: { children: React.ReactNode }) => {
+export default function PostLayout({ children }: Children) {
   const [user, setUser] = useState<IUser>();
+  console.log(user);
   const getUserDetail = async () => {
     try {
       const response = (await getCurrentUser()) as IResponse;
@@ -37,13 +41,13 @@ const LandingLayout = ({ children }: { children: React.ReactNode }) => {
     getUserDetail();
   }, []);
   return (
-    <div className=" w-screen h-full bg-black relative">
-      <NavbarTopComponent />
-      <StoryComponent avatar={user?.avatar} />
+    <div className=" w-screen h-full">
+      <div className=" sticky top-0 text-white bg-black p-3 flex items-center gap-5">
+        <IoClose size={30} />
+        <h1 className=" font-figtree text-lg">New Post</h1>
+      </div>
       {children}
       <NavbarComponent avatar={user?.avatar} />
     </div>
   );
-};
-
-export default LandingLayout;
+}

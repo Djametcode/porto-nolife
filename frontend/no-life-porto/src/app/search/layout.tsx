@@ -1,10 +1,12 @@
 "use client";
 
 import NavbarComponent from "@/component/navbar";
-import NavbarTopComponent from "@/component/navbarTop";
-import StoryComponent from "@/component/story";
 import { getCurrentUser } from "@/handler/getCurrentUser";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+
+interface Children {
+  children: React.ReactNode;
+}
 
 interface IUser {
   username: string;
@@ -19,8 +21,9 @@ interface IResponse {
   };
 }
 
-const LandingLayout = ({ children }: { children: React.ReactNode }) => {
+export default function SearchLayout({ children }: Children) {
   const [user, setUser] = useState<IUser>();
+  console.log(user);
   const getUserDetail = async () => {
     try {
       const response = (await getCurrentUser()) as IResponse;
@@ -37,13 +40,9 @@ const LandingLayout = ({ children }: { children: React.ReactNode }) => {
     getUserDetail();
   }, []);
   return (
-    <div className=" w-screen h-full bg-black relative">
-      <NavbarTopComponent />
-      <StoryComponent avatar={user?.avatar} />
+    <div>
       {children}
       <NavbarComponent avatar={user?.avatar} />
     </div>
   );
-};
-
-export default LandingLayout;
+}

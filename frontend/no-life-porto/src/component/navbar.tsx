@@ -15,12 +15,12 @@ const NavbarComponent = (data: INav) => {
       <Link href={"landing"} className=" w-full flex justify-center">
         <GoHome size={25} />
       </Link>
-      <div className=" w-full flex justify-center">
+      <Link href={"/search"} className=" w-full flex justify-center">
         <GoSearch size={25} />
-      </div>
-      <div className=" w-full flex justify-center">
+      </Link>
+      <Link href={"/post"} className=" w-full flex justify-center">
         <GoPlus size={25} />
-      </div>
+      </Link>
       <div className=" w-full flex justify-center">
         <GoVideo size={25} />
       </div>

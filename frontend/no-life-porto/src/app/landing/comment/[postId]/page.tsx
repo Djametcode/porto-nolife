@@ -6,9 +6,11 @@ import capitalizeName from "@/handler/capitalizeName";
 import { commentPostHandler } from "@/handler/commentPost";
 import { getCommentPost } from "@/handler/getCommentPost";
 import { getCurrentUser } from "@/handler/getCurrentUser";
+import Link from "next/link";
 import { useParams, useSelectedLayoutSegment } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AiOutlineHeart } from "react-icons/ai";
+import { IoClose } from "react-icons/io5";
 
 interface IComment {
   commentLike: [];
@@ -82,39 +84,46 @@ const CommentComponent = () => {
     getUser();
   }, [counter]);
   return (
-    <div className=" fixed bottom-0 h-[850px] rounded-tr-3xl rounded-tl-3xl w-full z-50 bg-slate-200 p-3">
-      <div className=" flex justify-center w-full font-figtree p-3">
-        <h1> Comment</h1>
-      </div>
-      <div>
-        {comment.map((item) => {
-          return (
-            <>
-              <div className=" w-full h-20 flex gap-4 items-start pl-3">
-                <div className=" w-[50px] h-[50px]">
-                  <img
-                    className=" w-full h-full object-contain rounded-full"
-                    src={item.createdBy.avatar}
-                    alt=""
-                  />
-                </div>
-                <div className=" font-figtree flex flex-col">
-                  <p className=" p-[1px] text-[12px] font-extrabold">
-                    {capitalizeName(item.createdBy.username)}
-                  </p>
-                  <p className=" p-[1px] text-[14px]">{item.commentText}</p>
-                  <div className=" p-[1px] flex gap-3 text-[12px] text-gray-500">
-                    <p>{item.commentLike.length} like</p>
-                    <p>reply</p>
+    <div className=" fixed bottom-0 h-full w-full z-50 bg-slate-200 p-2">
+      <div className=" flex flex-col gap-9">
+        <div className=" flex justify-center w-full font-figtree p-3">
+          <h1 className=" text-xl"> Comment</h1>
+          <div className=" absolute right-9 top-5">
+            <Link href={"/landing"}>
+              <IoClose size={25} />
+            </Link>
+          </div>
+        </div>
+        <div>
+          {comment.map((item) => {
+            return (
+              <>
+                <div className=" w-full h-20 flex gap-4 items-start pl-3">
+                  <div className=" w-[50px] h-[50px]">
+                    <img
+                      className=" w-full h-full object-contain rounded-full"
+                      src={item.createdBy.avatar}
+                      alt=""
+                    />
+                  </div>
+                  <div className=" font-figtree flex flex-col">
+                    <p className=" p-[1px] text-[12px] font-extrabold">
+                      {capitalizeName(item.createdBy.username)}
+                    </p>
+                    <p className=" p-[1px] text-[14px]">{item.commentText}</p>
+                    <div className=" p-[1px] flex gap-3 text-[12px] text-gray-500">
+                      <p>{item.commentLike.length} like</p>
+                      <p>reply</p>
+                    </div>
+                  </div>
+                  <div className=" absolute right-10">
+                    <AiOutlineHeart size={18} />
                   </div>
                 </div>
-                <div className=" absolute right-10">
-                  <AiOutlineHeart size={18} />
-                </div>
-              </div>
-            </>
-          );
-        })}
+              </>
+            );
+          })}
+        </div>
       </div>
       <div className="absolute bottom-5 w-full">
         <div className="w-full flex justify-start items-center gap-7 h-14">

@@ -28,12 +28,10 @@ export default function HomeComponent() {
   const [post, setPost] = useState<IPost[]>([]);
   const [counter, setCounter] = useState<number>(0);
   const [comment, setComment] = useState<boolean>(false);
-  console.log(counter);
   console.log(post);
   const getAllPost = async () => {
     try {
       const response = await getAllPostHandler();
-      console.log(response);
       setPost(response.post);
     } catch (error) {
       console.log(error);
