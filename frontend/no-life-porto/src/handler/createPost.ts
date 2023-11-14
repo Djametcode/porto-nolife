@@ -10,7 +10,7 @@ const createPostHandler = async (data: IData) => {
     console.log(check)
     try {
         if (check) {
-            const response = await axios.post('http://localhost:3000/api/v17/no-life/post/create-post', { postText: data.postText }, {
+            const response = await axios.post('https://backend-no-life-3678e78f1666.herokuapp.com/api/v17/no-life/post/create-post', { postText: data.postText }, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get("token")}`
                 }
@@ -18,7 +18,7 @@ const createPostHandler = async (data: IData) => {
 
             return response.data
         } else {
-            const response = await axios.post('http://localhost:3000/api/v17/no-life/post/create-post', { postText: data.postText, file: data.file }, {
+            const response = await axios.post('https://backend-no-life-3678e78f1666.herokuapp.com/api/v17/no-life/post/create-post', { postText: data.postText, file: data.file }, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get("token")}`
                 }
