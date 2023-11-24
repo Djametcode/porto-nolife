@@ -26,7 +26,7 @@ const NavbarComponent = (data: INav) => {
       </Link>
       <div className=" w-full flex justify-center">
         {data.avatar?.startsWith("https") ? (
-          <div>
+          <Link href={"/profile"}>
             <div className=" h-[30px] w-[30px]">
               <img
                 className=" w-full h-full rounded-full object-contain"
@@ -34,9 +34,11 @@ const NavbarComponent = (data: INav) => {
                 alt=""
               />
             </div>
-          </div>
+          </Link>
         ) : (
-          <BiSolidUserCircle size={25} />
+          <Link href={"/profile"}>
+            <BiSolidUserCircle size={25} />
+          </Link>
         )}
       </div>
     </div>
