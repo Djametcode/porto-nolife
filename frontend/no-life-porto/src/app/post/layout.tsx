@@ -41,7 +41,7 @@ export default function PostLayout({ children }: Children) {
     getUserDetail();
   }, []);
   return (
-    <div className=" w-screen h-full">
+    <div className=" w-screen h-full md:hidden">
       <div className=" sticky top-0 text-white bg-black p-3 flex items-center gap-5">
         <IoClose size={30} />
         <h1 className=" font-figtree text-lg">New Post</h1>

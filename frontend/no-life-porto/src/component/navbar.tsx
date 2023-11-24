@@ -21,9 +21,9 @@ const NavbarComponent = (data: INav) => {
       <Link href={"/post"} className=" w-full flex justify-center">
         <GoPlus size={25} />
       </Link>
-      <div className=" w-full flex justify-center">
+      <Link href={"/reels"} className=" w-full flex justify-center">
         <GoVideo size={25} />
-      </div>
+      </Link>
       <div className=" w-full flex justify-center">
         {data.avatar?.startsWith("https") ? (
           <div>

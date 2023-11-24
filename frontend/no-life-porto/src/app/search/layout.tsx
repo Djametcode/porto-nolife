@@ -40,7 +40,7 @@ export default function SearchLayout({ children }: Children) {
     getUserDetail();
   }, []);
   return (
-    <div>
+    <div className=" md:hidden">
       {children}
       <NavbarComponent avatar={user?.avatar} />
     </div>

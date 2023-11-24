@@ -37,7 +37,7 @@ const LandingLayout = ({ children }: { children: React.ReactNode }) => {
     getUserDetail();
   }, []);
   return (
-    <div className=" w-screen h-full bg-black relative">
+    <div className=" md:hidden w-screen h-full bg-black relative">
       <NavbarTopComponent />
       <StoryComponent avatar={user?.avatar} />
       {children}
