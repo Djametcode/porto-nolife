@@ -16,6 +16,7 @@ const postModel_1 = require("../model/postModel");
 const likeModel_1 = require("../model/likeModel");
 const commentModel_1 = require("../model/commentModel");
 const replyModel_1 = require("../model/replyModel");
+const followerModel_1 = require("../model/followerModel");
 const deleteAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user.userId;
     try {
@@ -34,7 +35,14 @@ const deleteAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const comment = yield commentModel_1.commentModel.deleteMany({ createdBy: userId });
         const reply = yield replyModel_1.replyModel.deleteMany({ createdBy: userId });
         const user = yield userModel_1.userModel.findOneAndDelete({ _id: userId });
-        return res.status(200).json({ msg: "Account deleted thx for using no-life", user, post, like, comment, reply });
+        return res.status(200).json({
+            msg: "Account deleted thx for using no-life",
+            user,
+            post,
+            like,
+            comment,
+            reply,
+        });
     }
     catch (error) {
         console.log(error);
@@ -54,7 +62,7 @@ const updateAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
         let result = yield cloudinary_1.v2.uploader.upload(file.path, {
             folder: "Testing",
-            resource_type: 'auto'
+            resource_type: "auto",
         });
         const updatedUser = yield userModel_1.userModel.findOneAndUpdate({ _id: userId }, { avatar: result.secure_url }, { new: true });
         return res.status(200).json({ msg: "success", updatedUser });
@@ -77,3 +85,41 @@ const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getCurrentUser = getCurrentUser;
+const followUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const userId = req.user.userId;
+    try {
+        const user = yield userModel_1.userModel.findOne({ _id: userId });
+        if (!user) {
+            return res.status(401).json({ msg: "Token invalid" });
+        }
+        const targetUser = yield userModel_1.userModel.findOne({ _id: id });
+        if (!targetUser) {
+            return res.status(404).json({ msg: "User not found or deleted" });
+        }
+        const newFollowing = new followerModel_1.followerModel({
+            userId: userId,
+            following: id,
+        });
+        const following = yield followerModel_1.followerModel.create(newFollowing);
+        user.following.push({
+            userId: targetUser._id,
+        });
+        targetUser.follower.push({
+            userId: user._id,
+        });
+        yield user.save();
+        yield targetUser.save();
+        return res.status(200).json({
+            msg: "Success following",
+            status: res.status,
+            data: {
+                user: user,
+                target: targetUser,
+            },
+        });
+    }
+    catch (error) {
+        return res.status(501).json({ msg: "Internal Server Error" });
+    }
+});

@@ -9,26 +9,30 @@ const { Schema } = mongoose_1.default;
 const userSchema = new Schema({
     username: {
         type: String,
-        required: [true, "Please provide username"]
+        required: [true, "Please provide username"],
     },
     email: {
         type: String,
-        required: [true, "Please provide email"]
+        required: [true, "Please provide email"],
     },
     password: {
         type: String,
         required: [true, "Please provide password"],
-        minlength: 6
+        minlength: 6,
     },
     avatar: {
         type: String,
-        default: ""
+        default: "",
     },
-    post: [{
+    post: [
+        {
             postId: {
                 type: Schema.Types.ObjectId,
-                ref: 'Post'
-            }
-        }]
+                ref: "Post",
+            },
+        },
+    ],
+    follower: [],
+    following: [],
 });
 exports.userModel = mongoose_1.default.model("User", userSchema);
