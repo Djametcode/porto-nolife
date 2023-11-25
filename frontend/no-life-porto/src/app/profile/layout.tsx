@@ -2,6 +2,7 @@
 
 import NavbarComponent from "@/component/navbar";
 import NavbarProfile from "@/component/navbarProfile";
+import ProfileComponent from "@/component/profile";
 import React from "react";
 
 export default function ProfileLayout({
@@ -12,6 +13,7 @@ export default function ProfileLayout({
   return (
     <div>
       <NavbarProfile />
+      <ProfileComponent />
       {children}
       <NavbarComponent avatar="" />
     </div>
