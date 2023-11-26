@@ -33,11 +33,11 @@ export default function ProfileLayout({
   return (
     <div>
       <div className=" sticky top-0">
-        <NavbarProfile username={user[0].username} />
+        <NavbarProfile username="Djamet" />
       </div>
       <ProfileComponent />
       {children}
-      <NavbarComponent avatar={user[0].avatar} />
+      <NavbarComponent avatar="" />
     </div>
   );
 }
