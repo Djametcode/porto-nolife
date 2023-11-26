@@ -23,4 +23,5 @@ router.put('/unlike-comment/:id', auth_1.authMiddleware, postController_1.unLike
 router.post('/reply-comment/:id', auth_1.authMiddleware, postController_1.replyComment);
 router.delete('/delete-reply', auth_1.authMiddleware, postController_1.deleteReply);
 router.get('/comment/:id', auth_1.authMiddleware, postController_1.getCommentByPostId);
+router.get('/my-post', auth_1.authMiddleware, postController_1.getMyPost);
 exports.postRouter = router;

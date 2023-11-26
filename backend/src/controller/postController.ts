@@ -21,36 +21,36 @@ const createPost = async (req: Request, res: Response) => {
             if (!postText) {
                 return res.status(400).json({ msg: "Please fill text" })
             }
-                const newPost = new postModel({
-                    postText: postText,
-                    createdBy: createdBy
-
-                })
-                const post = await postModel.create(newPost)
-                user.post.push({ postId: post._id })
-                await user?.save()
-
-            return res.status(200).json({ msg: "success", post, user })
-        } 
-            if (!postText) {
-                return res.status(400).json({ msg: "Please fill text" })
-            }
-            const result = await cloudinary.uploader.upload(file, {
-                folder: "Testing",
-                resource_type: 'auto'
-            })
-
             const newPost = new postModel({
                 postText: postText,
-                images: [{
-                    imageUrl: result.secure_url
-                }],
                 createdBy: createdBy
-            })
 
+            })
             const post = await postModel.create(newPost)
-            user?.post.push({ postId: post._id })
-            user?.save()
+            user.post.push({ postId: post._id })
+            await user?.save()
+
+            return res.status(200).json({ msg: "success", post, user })
+        }
+        if (!postText) {
+            return res.status(400).json({ msg: "Please fill text" })
+        }
+        const result = await cloudinary.uploader.upload(file, {
+            folder: "Testing",
+            resource_type: 'auto'
+        })
+
+        const newPost = new postModel({
+            postText: postText,
+            images: [{
+                imageUrl: result.secure_url
+            }],
+            createdBy: createdBy
+        })
+
+        const post = await postModel.create(newPost)
+        user?.post.push({ postId: post._id })
+        user?.save()
 
         return res.status(200).json({ msg: "success", post })
     } catch (error) {
@@ -78,6 +78,18 @@ const getPostById = async (req: Request, res: Response) => {
         }
     } catch (error) {
         console.log(error)
+    }
+}
+
+const getMyPost = async (req: Request, res: Response) => {
+    const userId = req.user.userId
+
+    try {
+        const post = await postModel.find({ createdBy: userId })
+
+        return res.status(200).json({ msg: "Success", post })
+    } catch (error) {
+        return res.status(501).json({ msg: "Internal Server Error" })
     }
 }
 
@@ -475,5 +487,6 @@ export {
     replyComment,
     deleteReply,
     deleteComment,
-    getCommentByPostId
+    getCommentByPostId,
+    getMyPost
 }

@@ -68,13 +68,23 @@ export default function HomeComponent() {
               </div>
               <div className=" w-full h-full">
                 {item.images.length > 0 ? (
-                  <div className=" w-full h-full">
-                    <img
-                      className=" w-full h-full object-contain"
-                      src={item.images[0].imageUrl}
-                      alt=""
-                    />
-                  </div>
+                  item.images[0].imageUrl.includes("video") ? (
+                    <div className=" h-[400px]">
+                      <video
+                        className=" h-full w-full"
+                        src={item.images[0].imageUrl}
+                        controls
+                      />
+                    </div>
+                  ) : (
+                    <div className=" w-full h-full">
+                      <img
+                        className=" w-full h-full object-contain"
+                        src={item.images[0].imageUrl}
+                        alt=""
+                      />
+                    </div>
+                  )
                 ) : (
                   <div className=" h-[175px] font-figtree text-sm bg-slate-700 p-2 rounded-xl">
                     <p>{item.postText}</p>

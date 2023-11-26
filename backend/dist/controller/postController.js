@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCommentByPostId = exports.deleteComment = exports.deleteReply = exports.replyComment = exports.unLikeComment = exports.likeComment = exports.commentPost = exports.unLikePost = exports.likePost = exports.deletePost = exports.getPostById = exports.getAllPost = exports.updatePost = exports.createPost = void 0;
+exports.getMyPost = exports.getCommentByPostId = exports.deleteComment = exports.deleteReply = exports.replyComment = exports.unLikeComment = exports.likeComment = exports.commentPost = exports.unLikePost = exports.likePost = exports.deletePost = exports.getPostById = exports.getAllPost = exports.updatePost = exports.createPost = void 0;
 const cloudinary_1 = require("cloudinary");
 const postModel_1 = require("../model/postModel");
 const userModel_1 = require("../model/userModel");
@@ -86,6 +86,17 @@ const getPostById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getPostById = getPostById;
+const getMyPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.user.userId;
+    try {
+        const post = yield postModel_1.postModel.find({ createdBy: userId });
+        return res.status(200).json({ msg: "Success", post });
+    }
+    catch (error) {
+        return res.status(501).json({ msg: "Internal Server Error" });
+    }
+});
+exports.getMyPost = getMyPost;
 const updatePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdBy = req.user.userId;
     const { updateText } = req.body;
