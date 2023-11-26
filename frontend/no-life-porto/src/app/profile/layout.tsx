@@ -16,7 +16,8 @@ export default function ProfileLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [user, setUser] = useState<Iuser[]>([]);
+  const [user, setUser] = useState<Iuser>();
+  console.log(user);
   const getUser = async () => {
     try {
       const response = await getCurrentUser();
@@ -33,11 +34,11 @@ export default function ProfileLayout({
   return (
     <div>
       <div className=" sticky top-0">
-        <NavbarProfile username="Djamet" />
+        <NavbarProfile username={user?.username} />
       </div>
       <ProfileComponent />
       {children}
-      <NavbarComponent avatar="" />
+      <NavbarComponent avatar={user?.avatar} />
     </div>
   );
 }

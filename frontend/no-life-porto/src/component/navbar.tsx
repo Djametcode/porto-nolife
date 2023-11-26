@@ -6,10 +6,11 @@ import { BiSolidUserCircle } from "react-icons/bi";
 import Link from "next/link";
 
 interface INav {
-  avatar: string | undefined;
+  avatar: string;
 }
 
 const NavbarComponent = (data: INav) => {
+  console.log(data.avatar);
   return (
     <div className=" p-3 flex items-center w-full fixed bottom-0 z-40 bg-black text-white">
       <Link href={"landing"} className=" w-full flex justify-center">
