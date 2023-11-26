@@ -20,14 +20,13 @@ interface IResponse {
 }
 
 const LandingLayout = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<IUser>();
+  const [user, setUser] = useState<IUser[]>([]);
   const getUserDetail = async () => {
     try {
       const response = (await getCurrentUser()) as IResponse;
-      setUser({
-        username: response.user.avatar,
-        avatar: response.user.avatar,
-      });
+      setUser([
+        { username: response.user.username, avatar: response.user.avatar },
+      ]);
     } catch (error) {
       console.log(error);
     }
@@ -39,9 +38,13 @@ const LandingLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className=" md:hidden w-screen h-full bg-black relative">
       <NavbarTopComponent />
-      <StoryComponent avatar={user?.avatar} />
+      {user.map((item) => {
+        return <StoryComponent key={item.avatar} avatar={item.avatar} />;
+      })}
       {children}
-      <NavbarComponent avatar={user?.avatar} />
+      {user.map((item) => {
+        return <NavbarComponent key={item.avatar} avatar={item.avatar} />;
+      })}
     </div>
   );
 };
