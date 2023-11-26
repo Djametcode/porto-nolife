@@ -23,15 +23,14 @@ interface IResponse {
 }
 
 export default function PostLayout({ children }: Children) {
-  const [user, setUser] = useState<IUser>();
+  const [user, setUser] = useState<IUser[]>([]);
   console.log(user);
   const getUserDetail = async () => {
     try {
       const response = (await getCurrentUser()) as IResponse;
-      setUser({
-        username: response.user.avatar,
-        avatar: response.user.avatar,
-      });
+      setUser([
+        { username: response.user.username, avatar: response.user.avatar },
+      ]);
     } catch (error) {
       console.log(error);
     }
@@ -47,7 +46,9 @@ export default function PostLayout({ children }: Children) {
         <h1 className=" font-figtree text-lg">New Post</h1>
       </div>
       {children}
-      <NavbarComponent avatar={user?.avatar} />
+      {user.map((item) => {
+        return <NavbarComponent key={item.avatar} avatar={item.avatar} />;
+      })}
     </div>
   );
 }
