@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMyPost = exports.getCommentByPostId = exports.deleteComment = exports.deleteReply = exports.replyComment = exports.unLikeComment = exports.likeComment = exports.commentPost = exports.unLikePost = exports.likePost = exports.deletePost = exports.getPostById = exports.getAllPost = exports.updatePost = exports.createPost = void 0;
+exports.searchSomething = exports.getMyPost = exports.getCommentByPostId = exports.deleteComment = exports.deleteReply = exports.replyComment = exports.unLikeComment = exports.likeComment = exports.commentPost = exports.unLikePost = exports.likePost = exports.deletePost = exports.getPostById = exports.getAllPost = exports.updatePost = exports.createPost = void 0;
 const cloudinary_1 = require("cloudinary");
 const postModel_1 = require("../model/postModel");
 const userModel_1 = require("../model/userModel");
@@ -400,3 +400,33 @@ const getCommentByPostId = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getCommentByPostId = getCommentByPostId;
+const searchSomething = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { key } = req.query;
+    const userId = req.user.userId;
+    if (!key) {
+        return res.status(400).json({ msg: "Please provide query key" });
+    }
+    try {
+        const check = yield userModel_1.userModel.findOne({ _id: userId });
+        if (!check) {
+            return res.status(401).json({ msg: "Token invalid" });
+        }
+        const regexPattern = new RegExp(key, 'i');
+        const users = yield userModel_1.userModel.find({
+            $or: [
+                { username: { $regex: regexPattern } },
+                { email: { $regex: regexPattern } },
+                // Add other fields you want to search here
+            ],
+        }).select("username avatar follower");
+        const post = yield postModel_1.postModel.find({
+            postText: { $regex: regexPattern }
+        }).select("postText createdBy").populate({ path: "createdBy", select: ["username", "avatar"] });
+        return res.status(200).json({ msg: "success", user: users, post: post });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(501).json({ msg: "Internal server error" });
+    }
+});
+exports.searchSomething = searchSomething;

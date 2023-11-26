@@ -11,7 +11,7 @@ const createPostHandler = async (data: IData) => {
   try {
     if (check) {
       const response = await axios.post(
-        "http://localhost:3000/api/v17/no-life/post/create-post",
+        "https://backend-no-life-3678e78f1666.herokuapp.com/api/v17/no-life/post/create-post",
         { postText: data.postText },
         {
           headers: {
@@ -28,7 +28,7 @@ const createPostHandler = async (data: IData) => {
 
       const result = Object.fromEntries(item)
       const response = await axios.postForm(
-        "http://localhost:3000/api/v17/no-life/post/create-post", {
+        "https://backend-no-life-3678e78f1666.herokuapp.com/api/v17/no-life/post/create-post", {
         result
       },
         {

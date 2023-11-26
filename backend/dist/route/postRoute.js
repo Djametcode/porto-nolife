@@ -24,4 +24,5 @@ router.post('/reply-comment/:id', auth_1.authMiddleware, postController_1.replyC
 router.delete('/delete-reply', auth_1.authMiddleware, postController_1.deleteReply);
 router.get('/comment/:id', auth_1.authMiddleware, postController_1.getCommentByPostId);
 router.get('/my-post', auth_1.authMiddleware, postController_1.getMyPost);
+router.get('/search', auth_1.authMiddleware, postController_1.searchSomething);
 exports.postRouter = router;

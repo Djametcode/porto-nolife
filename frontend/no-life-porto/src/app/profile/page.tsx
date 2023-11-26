@@ -29,7 +29,7 @@ export default function ProfilePost() {
     getPost();
   }, []);
   return (
-    <div className=" grid grid-cols-3 overflow-hidden">
+    <div className=" grid grid-cols-3 overflow-hidden pb-12">
       {post.map((item) => {
         return item.images.length !== 0 ? (
           item.images[0].imageUrl.includes("video") ? (
@@ -43,7 +43,7 @@ export default function ProfilePost() {
           ) : (
             <div className=" h-[150px]">
               <img
-                className=" w-full object-cover"
+                className=" w-full h-full object-cover"
                 src={item.images[0].imageUrl}
                 alt=""
               />
@@ -51,7 +51,7 @@ export default function ProfilePost() {
           )
         ) : (
           <div className=" p-2 h-[150px] bg-black text-white font-figtree">
-            <p>{item.postText}</p>
+            <p className=" text-xs">{item.postText}</p>
           </div>
         );
       })}

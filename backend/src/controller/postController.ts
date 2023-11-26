@@ -473,6 +473,42 @@ const getCommentByPostId = async (req: Request, res: Response) => {
     }
 }
 
+const searchSomething = async (req: Request, res: Response) => {
+    const { key } = req.query
+    const userId = req.user.userId;
+
+    if (!key) {
+        return res.status(400).json({ msg: "Please provide query key" })
+    }
+
+    try {
+        const check = await userModel.findOne({ _id: userId })
+
+        if (!check) {
+            return res.status(401).json({ msg: "Token invalid" })
+        }
+
+        const regexPattern = new RegExp(key as string, 'i')
+
+        const users = await userModel.find({
+            $or: [
+                { username: { $regex: regexPattern } },
+                { email: { $regex: regexPattern } },
+                // Add other fields you want to search here
+            ],
+        }).select("username avatar follower")
+
+        const post = await postModel.find({
+            postText: { $regex: regexPattern }
+        }).select("postText createdBy").populate({ path: "createdBy", select: ["username", "avatar"] })
+
+        return res.status(200).json({ msg: "success", user: users, post: post })
+    } catch (error) {
+        console.log(error)
+        return res.status(501).json({ msg: "Internal server error" })
+    }
+}
+
 export {
     createPost,
     updatePost,
@@ -488,5 +524,6 @@ export {
     deleteReply,
     deleteComment,
     getCommentByPostId,
-    getMyPost
+    getMyPost,
+    searchSomething
 }
