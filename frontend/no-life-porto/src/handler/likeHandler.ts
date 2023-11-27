@@ -1,11 +1,10 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { Dispatch, SetStateAction } from "react";
+import { useDispatch } from "react-redux";
 
 export const likePostHandler = async (
   postId: string,
-  counter: number,
-  setCounter: Dispatch<SetStateAction<number>>
 ) => {
   const token = Cookies.get("token");
   try {
@@ -18,7 +17,6 @@ export const likePostHandler = async (
         },
       }
     );
-    setCounter(counter + 1);
     return response.data;
   } catch (error) {
     console.log(error);

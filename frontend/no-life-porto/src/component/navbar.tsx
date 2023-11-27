@@ -12,20 +12,20 @@ interface INav {
 const NavbarComponent = (data: INav) => {
   console.log(data.avatar);
   return (
-    <div className=" p-3 flex items-center w-full fixed bottom-0 z-40 bg-black text-white">
-      <Link href={"landing"} className=" w-full flex justify-center">
+    <div className=" p-3 flex items-center justify-between w-full fixed bottom-0 z-40 bg-black text-white">
+      <Link href={"landing"}>
         <GoHome size={25} />
       </Link>
-      <Link href={"/search"} className=" w-full flex justify-center">
+      <Link href={"/search"}>
         <GoSearch size={25} />
       </Link>
-      <Link href={"/post"} className=" w-full flex justify-center">
+      <Link href={"/post"}>
         <GoPlus size={25} />
       </Link>
-      <Link href={"/reels"} className=" w-full flex justify-center">
+      <Link href={"/reels"}>
         <GoVideo size={25} />
       </Link>
-      <div className=" w-full flex justify-center">
+      <div>
         {data.avatar?.startsWith("https") ? (
           <Link href={"/profile"}>
             <div className=" h-[30px] w-[30px]">

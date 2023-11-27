@@ -3,8 +3,10 @@
 import FooterPostComponent from "@/component/postFooter";
 import capitalizeName from "@/handler/capitalizeName";
 import { getAllPostHandler } from "@/handler/getAllPost";
+import { RootState } from "@/store/store";
 import { Fragment, useEffect, useState } from "react";
 import { BiSolidUserCircle } from "react-icons/bi";
+import { useSelector } from "react-redux";
 
 interface IPost {
   _id: string;
@@ -28,7 +30,8 @@ export default function HomeComponent() {
   const [post, setPost] = useState<IPost[]>([]);
   const [counter, setCounter] = useState<number>(0);
   const [comment, setComment] = useState<boolean>(false);
-  console.log(post);
+  const refresher = useSelector((state: RootState) => state.global.refresher);
+
   const getAllPost = async () => {
     try {
       const response = await getAllPostHandler();
@@ -40,7 +43,8 @@ export default function HomeComponent() {
 
   useEffect(() => {
     getAllPost();
-  }, [counter]);
+  }, [refresher]);
+
   return (
     <div className=" p-3 h-full w-full text-white font-geologica flex flex-col gap-7 pb-14">
       {post.map((item) => {
@@ -99,8 +103,6 @@ export default function HomeComponent() {
                 createdDate={item.createdDate}
                 like={item.like}
                 comment={item.comment}
-                counter={counter}
-                setCounter={setCounter}
               />
             </div>
           </Fragment>

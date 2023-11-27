@@ -9,8 +9,9 @@ import timeAgo from "@/handler/timeConverter";
 import capitalizeName from "@/handler/capitalizeName";
 import { likePostHandler } from "@/handler/likeHandler";
 import Cookies from "js-cookie";
-import { Dispatch, SetStateAction } from "react";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { refresh } from "@/store/slice";
 
 interface LikeDetail {
   likeId: {
@@ -28,31 +29,28 @@ interface IPost {
   createdDate: string;
   createdBy: { username: string };
   image: any[];
-  counter: number;
-  setCounter: Dispatch<SetStateAction<number>>;
 }
 
 const FooterPostComponent = (data: IPost) => {
-  console.log(data.image.length);
-  console.log(data._id);
-
-  console.log(data.like.map((item) => console.log(item.likeId.createdBy._id)));
-
   const check = data.like.findIndex(
     (item) => item.likeId.createdBy._id === Cookies.get("userId")
   );
+  const dispatch = useDispatch();
 
-  console.log(check);
+  const likePost = async (postId: string) => {
+    try {
+      const response = await likePostHandler(postId);
+      console.log(response);
+      dispatch(refresh());
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className=" flex flex-col gap-3 font-figtree">
       <div className=" flex relative">
         <div className=" flex gap-3 font-extralight">
-          <div
-            onClick={() =>
-              likePostHandler(data._id, data.counter, data.setCounter)
-            }
-            className=" cursor-pointer"
-          >
+          <div onClick={() => likePost(data._id)} className=" cursor-pointer">
             {check !== -1 ? (
               <PiHeartFill fill={"red"} size={23} />
             ) : (
