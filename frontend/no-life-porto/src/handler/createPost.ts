@@ -26,11 +26,8 @@ const createPostHandler = async (data: IData) => {
       item.append('postText', data.postText)
       item.append('file', data.file as Blob)
 
-      const result = Object.fromEntries(item)
-      const response = await axios.postForm(
-        "https://backend-no-life-3678e78f1666.herokuapp.com/api/v17/no-life/post/create-post", {
-        result
-      },
+      const response = await axios.post(
+        "https://backend-no-life-3678e78f1666.herokuapp.com/api/v17/no-life/post/create-post", item,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,

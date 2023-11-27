@@ -42,12 +42,12 @@ export default function HomeComponent() {
     getAllPost();
   }, [counter]);
   return (
-    <div className=" h-full w-full text-white p-3 font-geologica flex flex-col gap-7 pb-14">
+    <div className=" p-3 h-full w-full text-white font-geologica flex flex-col gap-7 pb-14">
       {post.map((item) => {
         return (
           <Fragment key={item._id}>
             <div className=" flex flex-col gap-3 w-full h-full">
-              <div>
+              <div className="">
                 {item.createdBy.avatar === "" ? (
                   <div className=" flex items-center gap-3 font-geologica">
                     <BiSolidUserCircle size={35} />

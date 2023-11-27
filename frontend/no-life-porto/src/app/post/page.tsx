@@ -1,17 +1,25 @@
 "use client";
 
 import { createPostHandler } from "@/handler/createPost";
+import { RootState } from "@/store/store";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { finishLoading, startLoading } from "@/store/slice";
+import { Triangle } from "react-loader-spinner";
 
 export default function PostComponent() {
   const [postText, setPostText] = useState<string>("");
-  console.log(postText);
   const [file, setFile] = useState<File | null>(null);
-  console.log(file);
+
+  const dispatch = useDispatch();
+
+  const loading = useSelector((state: RootState) => state.global.isLoading);
+  console.log(loading);
 
   const createPost = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      dispatch(startLoading());
       const response = await createPostHandler({
         postText: postText,
         file: file,
@@ -20,6 +28,7 @@ export default function PostComponent() {
       setFile(null);
 
       console.log("success post");
+      dispatch(finishLoading());
       return response;
     } catch (error) {
       console.log(error);
@@ -49,7 +58,18 @@ export default function PostComponent() {
         />
         <div className=" bg-slate-200/20 p-2 text-center font-figtree rounded-2xl">
           <button onClick={(e: React.FormEvent) => createPost(e)}>
-            create post
+            {loading ? (
+              <Triangle
+                height="35"
+                width="35"
+                color="white"
+                ariaLabel="triangle-loading"
+                wrapperStyle={{}}
+                visible={true}
+              />
+            ) : (
+              "create post"
+            )}
           </button>
         </div>
       </div>

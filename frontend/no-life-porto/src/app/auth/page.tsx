@@ -5,10 +5,16 @@ import { useState } from "react";
 import { FaFacebookSquare } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { finishLoading, startLoading } from "@/store/slice";
+import { Triangle } from "react-loader-spinner";
 
 export default function AuthComponent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const loading = useSelector((state: RootState) => state.global.isLoading);
+  const dispatch = useDispatch();
 
   const router = useRouter();
 
@@ -22,16 +28,18 @@ export default function AuthComponent() {
   const loginUser = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      dispatch(startLoading());
       const response = await loginHandler(data);
       console.log(response);
       setEmail("");
       setPassword("");
       Cookies.set("token", response.token);
       Cookies.set("userId", response.user._id);
+      dispatch(finishLoading());
 
       router.push("/landing");
     } catch (error) {
-      console.log(error);
+      dispatch(finishLoading());
     }
   };
   return (
@@ -66,7 +74,18 @@ export default function AuthComponent() {
           onClick={(e: React.FormEvent) => loginUser(e)}
           className=" text-sm font-extrabold"
         >
-          Login
+          {loading ? (
+            <Triangle
+              height="20"
+              width="20"
+              color="white"
+              ariaLabel="triangle-loading"
+              wrapperStyle={{}}
+              visible={true}
+            />
+          ) : (
+            "create post"
+          )}
         </button>
       </div>
       <div className=" flex justify-center w-full gap-4 items-center p-3">
