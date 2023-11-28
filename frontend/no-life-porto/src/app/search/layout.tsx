@@ -3,6 +3,8 @@
 import NavbarComponent from "@/component/navbar";
 import { getCurrentUser } from "@/handler/getCurrentUser";
 import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { redirect } from "next/navigation";
 
 interface Children {
   children: React.ReactNode;
@@ -39,6 +41,13 @@ export default function SearchLayout({ children }: Children) {
   useEffect(() => {
     getUserDetail();
   }, []);
+
+  const token = Cookies.get("token");
+  useEffect(() => {
+    if (!token) {
+      redirect("/auth");
+    }
+  }, [token]);
   return (
     <div className=" md:hidden">
       {children}

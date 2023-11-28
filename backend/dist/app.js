@@ -31,6 +31,7 @@ const configSchema = zod_1.z.object({
 const connectDB_1 = require("./db/connectDB");
 const authRoute_1 = require("./route/authRoute");
 const postRoute_1 = require("./route/postRoute");
+const userRoute_1 = require("./route/userRoute");
 cloudinary_1.v2.config({
     api_key: process.env.API_KEY,
     api_secret: process.env.API_SECRET,
@@ -41,6 +42,7 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use("/api/v17/no-life/auth", authRoute_1.authRouter);
 app.use("/api/v17/no-life/post", postRoute_1.postRouter);
+app.use('/api/v17/no-life/user', userRoute_1.userRoute);
 const mongo_url = configSchema.parse(process.env);
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {

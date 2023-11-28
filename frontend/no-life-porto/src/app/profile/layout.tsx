@@ -5,6 +5,8 @@ import NavbarProfile from "@/component/navbarProfile";
 import ProfileComponent from "@/component/profile";
 import React, { useEffect, useState } from "react";
 import { getCurrentUser } from "@/handler/getCurrentUser";
+import Cookies from "js-cookie";
+import { redirect } from "next/navigation";
 
 interface Iuser {
   _id?: string;
@@ -37,8 +39,15 @@ export default function ProfileLayout({
   useEffect(() => {
     getUser();
   }, []);
+
+  const token = Cookies.get("token");
+  useEffect(() => {
+    if (!token) {
+      redirect("/auth");
+    }
+  }, [token]);
   return (
-    <div>
+    <div className=" bg-black h-screen">
       <div className=" sticky top-0">
         {user.map((item) => {
           return <NavbarProfile key={item._id} username={item.username} />;

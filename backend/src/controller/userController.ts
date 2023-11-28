@@ -102,18 +102,23 @@ const followUser = async (req: Request, res: Response) => {
       return res.status(401).json({ msg: "Token invalid" });
     }
 
+    const check = userId === id
+
+    if (check) {
+      return res.status(400).json({ msg: "cannot follow yourself" })
+    }
+
     const targetUser = await userModel.findOne({ _id: id });
 
     if (!targetUser) {
       return res.status(404).json({ msg: "User not found or deleted" });
     }
 
-    const newFollowing = new followerModel({
-      userId: userId,
-      following: id,
-    });
+    const isFollowed = targetUser.follower.findIndex((item) => item.userId.equals(userId))
 
-    const following = await followerModel.create(newFollowing);
+    if (isFollowed !== -1) {
+      return res.status(400).json({ msg: "already followed" })
+    }
 
     user.following.push({
       userId: targetUser._id,
@@ -139,4 +144,4 @@ const followUser = async (req: Request, res: Response) => {
   }
 };
 
-export { deleteAccount, updateAvatar, getCurrentUser };
+export { deleteAccount, updateAvatar, getCurrentUser, followUser };

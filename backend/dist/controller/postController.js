@@ -20,52 +20,51 @@ const createPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     var _a;
     const createdBy = req.user.userId;
     const { postText } = req.body;
-    let file = (_a = req.file) === null || _a === void 0 ? void 0 : _a.path;
+    const file = (_a = req.file) === null || _a === void 0 ? void 0 : _a.path;
     try {
         const user = yield userModel_1.userModel.findOne({ _id: createdBy });
         if (!user) {
             return res.status(404).json({ msg: "Token not valid" });
         }
-        if (!file) {
-            if (!postText) {
-                return res.status(400).json({ msg: "Please fill text" });
-            }
+        if (!file && !postText) {
+            return res.status(400).json({ msg: "Please provide either text or file" });
+        }
+        if (file) {
+            const result = yield cloudinary_1.v2.uploader.upload(file, {
+                folder: "Testing",
+                resource_type: 'auto'
+            });
             const newPost = new postModel_1.postModel({
-                postText: postText,
+                postText: postText || '',
+                images: [{
+                        imageUrl: result.secure_url
+                    }],
                 createdBy: createdBy
             });
             const post = yield postModel_1.postModel.create(newPost);
-            user.post.push({ postId: post._id });
+            user === null || user === void 0 ? void 0 : user.post.push({ postId: post._id });
             yield (user === null || user === void 0 ? void 0 : user.save());
-            return res.status(200).json({ msg: "success", post, user });
+            return res.status(200).json({ msg: "success", post });
         }
-        if (!postText) {
-            return res.status(400).json({ msg: "Please fill text" });
-        }
-        const result = yield cloudinary_1.v2.uploader.upload(file, {
-            folder: "Testing",
-            resource_type: 'auto'
-        });
+        // If no file, create post without image
         const newPost = new postModel_1.postModel({
-            postText: postText,
-            images: [{
-                    imageUrl: result.secure_url
-                }],
+            postText: postText || '',
             createdBy: createdBy
         });
         const post = yield postModel_1.postModel.create(newPost);
         user === null || user === void 0 ? void 0 : user.post.push({ postId: post._id });
-        user === null || user === void 0 ? void 0 : user.save();
+        yield (user === null || user === void 0 ? void 0 : user.save());
         return res.status(200).json({ msg: "success", post });
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
+        return res.status(500).json({ msg: "Internal server error" });
     }
 });
 exports.createPost = createPost;
 const getAllPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const post = yield postModel_1.postModel.find({}).populate({ path: "createdBy", select: ["username", "avatar"] }).populate({ path: "like.likeId", populate: { path: "createdBy", select: ["_id", "username"] } });
+        const post = yield postModel_1.postModel.find({}).populate({ path: "createdBy", select: ["username", "avatar", "follower"] }).populate({ path: "like.likeId", populate: { path: "createdBy", select: ["_id", "username"] } });
         return res.status(200).json({ msg: "success", post });
     }
     catch (error) {

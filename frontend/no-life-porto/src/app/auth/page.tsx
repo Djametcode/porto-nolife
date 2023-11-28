@@ -4,26 +4,23 @@ import { loginHandler } from "@/handler/loginHandlet";
 import { useState } from "react";
 import { FaFacebookSquare } from "react-icons/fa";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { finishLoading, startLoading } from "@/store/slice";
 import { Triangle } from "react-loader-spinner";
+import { loginRedux } from "@/store/slice";
 
 export default function AuthComponent() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const loading = useSelector((state: RootState) => state.global.isLoading);
   const dispatch = useDispatch();
-
+  const loginData = useSelector((state: RootState) => state.global.login);
   const router = useRouter();
 
   const data = {
-    email: email,
-    password: password,
+    email: loginData.email,
+    password: loginData.password,
   };
-
-  console.log(data);
 
   const loginUser = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,10 +28,10 @@ export default function AuthComponent() {
       dispatch(startLoading());
       const response = await loginHandler(data);
       console.log(response);
-      setEmail("");
-      setPassword("");
       Cookies.set("token", response.token);
       Cookies.set("userId", response.user._id);
+
+      dispatch(loginRedux({ email: "", password: "" }));
       dispatch(finishLoading());
 
       router.push("/landing");
@@ -42,6 +39,19 @@ export default function AuthComponent() {
       dispatch(finishLoading());
     }
   };
+
+  const handleChange = (type: string, data: string) => {
+    if (type === "email") {
+      dispatch(loginRedux({ email: data, password: loginData.password }));
+    }
+
+    if (type === "password") {
+      dispatch(loginRedux({ email: loginData.email, password: data }));
+    }
+
+    return;
+  };
+
   return (
     <form className=" flex flex-col w-[350px] gap-5" action="">
       <div className=" flex flex-col gap-4">
@@ -49,18 +59,18 @@ export default function AuthComponent() {
           className=" p-3 rounded-lg text-sm bg-transparent border-[0.5px] focus:outline-none"
           type="email"
           placeholder="Email"
-          value={email}
+          value={loginData.email}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setEmail(e.target.value)
+            handleChange("email", e.target.value)
           }
         />
         <input
           className=" p-3 rounded-lg text-sm bg-transparent border-[0.5px] focus:outline-none"
           type="password"
           placeholder="Password"
-          value={password}
+          value={loginData.password}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setPassword(e.target.value)
+            handleChange("password", e.target.value)
           }
         />
       </div>
@@ -84,7 +94,7 @@ export default function AuthComponent() {
               visible={true}
             />
           ) : (
-            "create post"
+            "Login"
           )}
         </button>
       </div>

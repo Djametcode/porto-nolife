@@ -1,10 +1,13 @@
 "use client";
 
+import AuthenticationProvider from "@/component/authentication";
 import NavbarComponent from "@/component/navbar";
 import NavbarTopComponent from "@/component/navbarTop";
 import StoryComponent from "@/component/story";
 import { getCurrentUser } from "@/handler/getCurrentUser";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { redirect } from "next/navigation";
 
 interface IUser {
   username: string;
@@ -35,6 +38,13 @@ const LandingLayout = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     getUserDetail();
   }, []);
+
+  const token = Cookies.get("token");
+  useEffect(() => {
+    if (!token) {
+      redirect("/auth");
+    }
+  }, [token]);
   return (
     <div className=" md:hidden w-screen h-full bg-black relative">
       <NavbarTopComponent />

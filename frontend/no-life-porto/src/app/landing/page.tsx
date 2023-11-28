@@ -90,7 +90,7 @@ export default function HomeComponent() {
                     </div>
                   )
                 ) : (
-                  <div className=" h-[175px] font-figtree text-sm bg-slate-700 p-2 rounded-xl">
+                  <div className=" h-[175px] font-figtree text-sm bg-slate-100/20 p-2 rounded-md">
                     <p>{item.postText}</p>
                   </div>
                 )}

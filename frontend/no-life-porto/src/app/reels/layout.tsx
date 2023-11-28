@@ -1,9 +1,10 @@
 "use client";
 
 import NavbarComponent from "@/component/navbar";
-import { getAllPostHandler } from "@/handler/getAllPost";
 import { getCurrentUser } from "@/handler/getCurrentUser";
 import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { redirect } from "next/navigation";
 
 interface Iuser {
   avatar: string;
@@ -39,6 +40,13 @@ export default function ReelsLayout({
   useEffect(() => {
     getUser();
   }, []);
+
+  const token = Cookies.get("token");
+  useEffect(() => {
+    if (!token) {
+      redirect("/auth");
+    }
+  }, [token]);
 
   return (
     <div className=" h-screen bg-black text-white font-figtree">

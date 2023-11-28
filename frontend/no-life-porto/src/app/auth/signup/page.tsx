@@ -1,20 +1,23 @@
 "use client";
 
 import { signUpHandler } from "@/handler/signUpHandler";
+import { registRedux, startLoading, finishLoading } from "@/store/slice";
+import { RootState } from "@/store/store";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { FaFacebookSquare } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { Triangle } from "react-loader-spinner";
 
 export default function SignUpComponent() {
-  const [username, setUsername] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const isLoading = useSelector((state: RootState) => state.global.isLoading);
+  const registData = useSelector((state: RootState) => state.global.regist);
+  const dispatch = useDispatch();
   const router = useRouter();
 
   const data = {
-    username: username,
-    email: email,
-    password: password,
+    username: registData.username,
+    email: registData.email,
+    password: registData.password,
   };
 
   console.log(data);
@@ -22,11 +25,11 @@ export default function SignUpComponent() {
   const registUser = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      dispatch(startLoading());
       const response = await signUpHandler(data);
       console.log(response);
-      setUsername("");
-      setEmail("");
-      setPassword("");
+      dispatch(registRedux({ username: "", email: "", password: "" }));
+      dispatch(finishLoading());
       router.push("/auth");
     } catch (error) {
       console.log(error);
@@ -35,15 +38,33 @@ export default function SignUpComponent() {
 
   const changeHandler = (kind: string, data: string) => {
     if (kind == "username") {
-      setUsername(data);
+      dispatch(
+        registRedux({
+          username: data,
+          email: registData.email,
+          password: registData.password,
+        })
+      );
     }
 
     if (kind == "email") {
-      setEmail(data);
+      dispatch(
+        registRedux({
+          username: registData.username,
+          email: data,
+          password: registData.password,
+        })
+      );
     }
 
     if (kind == "password") {
-      setPassword(data);
+      dispatch(
+        registRedux({
+          username: registData.username,
+          email: registData.email,
+          password: data,
+        })
+      );
     }
 
     return;
@@ -55,7 +76,7 @@ export default function SignUpComponent() {
           className=" p-3 rounded-lg text-sm bg-transparent border-[0.5px] focus:outline-none"
           type="text"
           placeholder="Username"
-          value={username}
+          value={registData.username}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             changeHandler("username", e.target.value)
           }
@@ -64,7 +85,7 @@ export default function SignUpComponent() {
           className=" p-3 rounded-lg text-sm bg-transparent border-[0.5px] focus:outline-none"
           type="email"
           placeholder="Email"
-          value={email}
+          value={registData.email}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             changeHandler("email", e.target.value)
           }
@@ -73,7 +94,7 @@ export default function SignUpComponent() {
           className=" p-3 rounded-lg text-sm bg-transparent border-[0.5px] focus:outline-none"
           type="password"
           placeholder="Password"
-          value={password}
+          value={registData.password}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             changeHandler("password", e.target.value)
           }
@@ -84,7 +105,18 @@ export default function SignUpComponent() {
           onClick={(e: React.FormEvent) => registUser(e)}
           className=" text-sm"
         >
-          Create Account
+          {isLoading ? (
+            <Triangle
+              height="20"
+              width="20"
+              color="white"
+              ariaLabel="triangle-loading"
+              wrapperStyle={{}}
+              visible={true}
+            />
+          ) : (
+            "Create Account"
+          )}
         </button>
       </div>
       <div className=" flex justify-center w-full gap-4 items-center p-3">

@@ -19,6 +19,7 @@ const configSchema = z.object({
 import { connectDB } from "./db/connectDB";
 import { authRouter } from "./route/authRoute";
 import { postRouter } from "./route/postRoute";
+import { userRoute } from "./route/userRoute";
 
 cloudinary.config({
   api_key: process.env.API_KEY,
@@ -31,6 +32,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/api/v17/no-life/auth", authRouter);
 app.use("/api/v17/no-life/post", postRouter);
+app.use('/api/v17/no-life/user', userRoute)
 
 const mongo_url = configSchema.parse(process.env);
 

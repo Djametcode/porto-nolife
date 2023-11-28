@@ -20,6 +20,7 @@ import Cookies from "js-cookie";
 import { likePostHandler } from "@/handler/likeHandler";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { followUserHandler } from "@/handler/followUser";
 
 interface IVideo {
   imageUrl: string;
@@ -29,8 +30,14 @@ interface IReels {
   _id: string;
   images: IVideo[];
   createdBy: {
+    _id: string;
     avatar: string;
     username: string;
+    follower: [
+      {
+        userId: string;
+      }
+    ];
   };
   postText: string;
   like: [
@@ -80,6 +87,16 @@ export default function ReelsComponent() {
     }
   };
 
+  const followUser = async (target: string) => {
+    try {
+      const response = await followUserHandler(target);
+      console.log(response);
+      dispatch(refresh());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className=" w-full h-screen overflow-scroll snap-y snap-mandatory snap-always">
       <div className=" fixed z-40 top-5 left-5">
@@ -89,6 +106,7 @@ export default function ReelsComponent() {
         return (
           <div className=" relative w-full h-full snap-center" key={item._id}>
             <video
+              controls
               className=" absolute top-0 z-10 w-full h-full object-contain"
               src={item.images[0].imageUrl}
             />
@@ -106,8 +124,15 @@ export default function ReelsComponent() {
                     <div className=" font-figtree text-sm">
                       <p>{capitalizeName(item.createdBy.username)}</p>
                     </div>
-                    <button className=" border p-1 rounded-md text-xs">
-                      Follow
+                    <button
+                      onClick={() => followUser(item.createdBy._id)}
+                      className=" border p-1 rounded-md text-xs"
+                    >
+                      {item.createdBy.follower.findIndex(
+                        (item) => item.userId === Cookies.get("userId")
+                      ) !== -1
+                        ? "followed"
+                        : "follow"}
                     </button>
                   </div>
                   <div className=" font-figtree text-sm">

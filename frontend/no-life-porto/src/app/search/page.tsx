@@ -8,12 +8,20 @@ import { CgSearch } from "react-icons/cg";
 import Cookies from "js-cookie";
 import capitalizeName from "@/handler/capitalizeName";
 import { HiUserCircle } from "react-icons/hi2";
+import { followUserHandler } from "@/handler/followUser";
+import { useDispatch, useSelector } from "react-redux";
+import { refresh } from "@/store/slice";
+import { RootState } from "@/store/store";
 
 interface Iuser {
   _id: string;
   avatar: string;
   username: string;
-  follower: any[];
+  follower: [
+    {
+      userId: string;
+    }
+  ];
 }
 
 interface Ipost {
@@ -36,6 +44,8 @@ export default function SearchComponent() {
   const [item, setItem] = useState<Idata[]>([]);
   console.log(item);
   const [isSearch, setIsSearch] = useState<boolean>(false);
+  const dispatch = useDispatch();
+  const refresher = useSelector((state: RootState) => state.global.refresher);
 
   const searchSomething = async () => {
     try {
@@ -61,7 +71,17 @@ export default function SearchComponent() {
     }, 600);
 
     return () => clearTimeout(timeOut);
-  }, [userInput]);
+  }, [userInput, refresher]);
+
+  const followUser = async (target: string) => {
+    try {
+      const response = await followUserHandler(target);
+      console.log(response);
+      dispatch(refresh());
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className=" w-screen h-screen bg-black text-white">
@@ -111,7 +131,13 @@ export default function SearchComponent() {
                         </div>
                         <div className=" absolute right-5">
                           <div className=" font-figtree text-sm border p-2">
-                            <button>Follow</button>
+                            <button onClick={() => followUser(item._id)}>
+                              {item.follower.findIndex(
+                                (item) => item.userId === Cookies.get("userId")
+                              ) !== -1
+                                ? "followed"
+                                : "follow"}
+                            </button>
                           </div>
                         </div>
                       </div>

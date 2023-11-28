@@ -9,14 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCurrentUser = exports.updateAvatar = exports.deleteAccount = void 0;
+exports.followUser = exports.getCurrentUser = exports.updateAvatar = exports.deleteAccount = void 0;
 const userModel_1 = require("../model/userModel");
 const cloudinary_1 = require("cloudinary");
 const postModel_1 = require("../model/postModel");
 const likeModel_1 = require("../model/likeModel");
 const commentModel_1 = require("../model/commentModel");
 const replyModel_1 = require("../model/replyModel");
-const followerModel_1 = require("../model/followerModel");
 const deleteAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user.userId;
     try {
@@ -93,15 +92,18 @@ const followUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!user) {
             return res.status(401).json({ msg: "Token invalid" });
         }
+        const check = userId === id;
+        if (check) {
+            return res.status(400).json({ msg: "cannot follow yourself" });
+        }
         const targetUser = yield userModel_1.userModel.findOne({ _id: id });
         if (!targetUser) {
             return res.status(404).json({ msg: "User not found or deleted" });
         }
-        const newFollowing = new followerModel_1.followerModel({
-            userId: userId,
-            following: id,
-        });
-        const following = yield followerModel_1.followerModel.create(newFollowing);
+        const isFollowed = targetUser.follower.findIndex((item) => item.userId.equals(userId));
+        if (isFollowed !== -1) {
+            return res.status(400).json({ msg: "already followed" });
+        }
         user.following.push({
             userId: targetUser._id,
         });
@@ -123,3 +125,4 @@ const followUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.status(501).json({ msg: "Internal Server Error" });
     }
 });
+exports.followUser = followUser;

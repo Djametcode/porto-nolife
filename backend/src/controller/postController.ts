@@ -7,60 +7,62 @@ import { commentModel } from "../model/commentModel";
 import { replyModel } from "../model/replyModel";
 
 const createPost = async (req: Request, res: Response) => {
-    const createdBy = req.user.userId
-    const { postText } = req.body
-    let file = req.file?.path
+    const createdBy = req.user.userId;
+    const { postText } = req.body;
+    const file = req.file?.path;
 
     try {
-        const user = await userModel.findOne({ _id: createdBy })
+        const user = await userModel.findOne({ _id: createdBy });
 
         if (!user) {
-            return res.status(404).json({ msg: "Token not valid" })
+            return res.status(404).json({ msg: "Token not valid" });
         }
-        if (!file) {
-            if (!postText) {
-                return res.status(400).json({ msg: "Please fill text" })
-            }
+
+        if (!file && !postText) {
+            return res.status(400).json({ msg: "Please provide either text or file" });
+        }
+
+        if (file) {
+            const result = await cloudinary.uploader.upload(file, {
+                folder: "Testing",
+                resource_type: 'auto'
+            });
+
             const newPost = new postModel({
-                postText: postText,
+                postText: postText || '', // Handle the case where postText is undefined
+                images: [{
+                    imageUrl: result.secure_url
+                }],
                 createdBy: createdBy
+            });
 
-            })
-            const post = await postModel.create(newPost)
-            user.post.push({ postId: post._id })
-            await user?.save()
+            const post = await postModel.create(newPost);
+            user?.post.push({ postId: post._id });
+            await user?.save();
 
-            return res.status(200).json({ msg: "success", post, user })
+            return res.status(200).json({ msg: "success", post });
         }
-        if (!postText) {
-            return res.status(400).json({ msg: "Please fill text" })
-        }
-        const result = await cloudinary.uploader.upload(file, {
-            folder: "Testing",
-            resource_type: 'auto'
-        })
 
+        // If no file, create post without image
         const newPost = new postModel({
-            postText: postText,
-            images: [{
-                imageUrl: result.secure_url
-            }],
+            postText: postText || '',
             createdBy: createdBy
-        })
+        });
 
-        const post = await postModel.create(newPost)
-        user?.post.push({ postId: post._id })
-        user?.save()
+        const post = await postModel.create(newPost);
+        user?.post.push({ postId: post._id });
+        await user?.save();
 
-        return res.status(200).json({ msg: "success", post })
+        return res.status(200).json({ msg: "success", post });
     } catch (error) {
-        console.log(error)
+        console.error(error);
+        return res.status(500).json({ msg: "Internal server error" });
     }
-}
+};
 
 const getAllPost = async (req: Request, res: Response) => {
     try {
-        const post = await postModel.find({}).populate({ path: "createdBy", select: ["username", "avatar"] }).populate({ path: "like.likeId", populate: { path: "createdBy", select: ["_id", "username"] } })
+        const post = await postModel.find({}).populate({ path: "createdBy", select: ["username", "avatar", "follower"] }).populate({ path: "like.likeId", populate: { path: "createdBy", select: ["_id", "username"] } })
 
         return res.status(200).json({ msg: "success", post })
     } catch (error) {
