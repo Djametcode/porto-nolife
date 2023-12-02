@@ -111,8 +111,8 @@ export default function ReelsComponent() {
               src={item.images[0].imageUrl}
             />
             <div className=" w-full h-full">
-              <div className=" z-30 w-full absolute bottom-14">
-                <div className=" flex flex-col gap-3 p-3">
+              <div className=" z-30 w-full absolute bottom-16">
+                <div className=" flex flex-col gap-3 p-4">
                   <div className=" w-full flex items-center gap-3">
                     <div className=" w-[40px] h-[40px]">
                       <img
@@ -139,7 +139,7 @@ export default function ReelsComponent() {
                     <p>{item.postText}</p>
                   </div>
                   <div className="  absolute right-3 bottom-9">
-                    <div className=" flex flex-col gap-5">
+                    <div className=" flex flex-col gap-5 p-4">
                       <div className=" flex flex-col gap-2 items-center">
                         {item.like.findIndex(
                           (item) =>

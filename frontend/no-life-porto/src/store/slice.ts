@@ -11,8 +11,8 @@ interface IData {
         username: string;
         email: string;
         password: string;
-
     }
+    update: boolean
 }
 
 const initialState: IData = {
@@ -26,7 +26,8 @@ const initialState: IData = {
         username: '',
         email: '',
         password: ''
-    }
+    },
+    update: false
 
 }
 
@@ -48,9 +49,12 @@ const globalState = createSlice({
         },
         registRedux: (state, action: { payload: { username: string; email: string; password: string } }) => {
             state.regist = { username: action.payload.username, email: action.payload.email, password: action.payload.password }
+        },
+        updateProfile: (state) => {
+            state.update = true
         }
     }
 })
 
 export const globalSlice = globalState.reducer
-export const { startLoading, finishLoading, refresh, loginRedux, registRedux } = globalState.actions
+export const { startLoading, finishLoading, refresh, loginRedux, registRedux, updateProfile } = globalState.actions

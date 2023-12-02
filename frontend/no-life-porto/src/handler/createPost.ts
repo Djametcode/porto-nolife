@@ -16,7 +16,7 @@ const createPostHandler = async (data: IData) => {
     }
 
     const response = await axios.post(
-      "https://backend-no-life-3678e78f1666.herokuapp.com/api/v17/no-life/post/create-post",
+      "https://porto-nolife-backend.vercel.app/api/v17/no-life/post/create-post",
       item,
       {
         headers: {

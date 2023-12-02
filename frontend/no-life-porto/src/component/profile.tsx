@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import capitalizeName from "@/handler/capitalizeName";
@@ -40,7 +41,7 @@ export default function ProfileComponent() {
         return (
           <div
             key={item._id}
-            className=" p-3 h-full w-full bg-black text-white flex flex-col gap-3"
+            className=" p-5 h-full w-full bg-black text-white flex flex-col gap-5"
           >
             <div className=" flex h-[75px] items-center">
               <div className=" w-1/3">
@@ -80,23 +81,17 @@ export default function ProfileComponent() {
               </button>
             </div>
             <div>
-              <div className=" flex flex-col gap-2 w-[55px] items-center">
+              <div className=" pt-2 pb-2 flex flex-col gap-2 w-[55px] items-center">
                 <div className=" w-[50px] h-[50px] border rounded-full flex items-center justify-center">
                   <GoPlus size={30} />
                 </div>
                 <p className=" text-xs font-figtree">Baru</p>
               </div>
             </div>
-            <div className=" flex">
-              <div className=" w-full flex justify-center border-b">
-                <HiOutlineSquares2X2 size={25} />
-              </div>
-              <div className=" w-full flex justify-center">
-                <MdVideoLibrary size={25} />
-              </div>
-              <div className=" w-full flex justify-center">
-                <FaUserTag size={25} />
-              </div>
+            <div className=" flex w-full justify-around pt-3">
+              <HiOutlineSquares2X2 size={25} />
+              <MdVideoLibrary size={25} />
+              <FaUserTag size={25} />
             </div>
           </div>
         );

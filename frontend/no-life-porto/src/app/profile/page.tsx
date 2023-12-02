@@ -2,7 +2,9 @@
 "use client";
 
 import { getMyPost } from "@/handler/getMyPost";
+import { RootState } from "@/store/store";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 interface ImageUrl {
   imageUrl: string;
@@ -28,6 +30,7 @@ export default function ProfilePost() {
   useEffect(() => {
     getPost();
   }, []);
+
   return (
     <div className=" grid grid-cols-3 overflow-hidden pb-12">
       {post.map((item) => {

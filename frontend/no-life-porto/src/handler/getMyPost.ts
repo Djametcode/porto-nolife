@@ -5,7 +5,7 @@ const getMyPost = async () => {
     const token = Cookies.get('token')
 
     try {
-        const response = await axios.get('https://backend-no-life-3678e78f1666.herokuapp.com/api/v17/no-life/post/my-post', {
+        const response = await axios.get('https://porto-nolife-backend.vercel.app/api/v17/no-life/post/my-post', {
             headers: {
                 Authorization: `Bearer ${token}`
             }

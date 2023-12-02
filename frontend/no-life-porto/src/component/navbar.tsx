@@ -12,7 +12,7 @@ interface INav {
 const NavbarComponent = (data: INav) => {
   console.log(data.avatar);
   return (
-    <div className=" p-3 flex items-center justify-between w-full fixed bottom-0 z-40 bg-black text-white">
+    <div className=" p-3 flex items-center justify-around w-full fixed bottom-0 z-40 bg-black text-white">
       <Link href={"landing"}>
         <GoHome size={25} />
       </Link>

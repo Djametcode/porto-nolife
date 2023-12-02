@@ -125,33 +125,35 @@ const CommentComponent = () => {
           })}
         </div>
       </div>
-      <div className="absolute bottom-5 w-full">
-        <div className="w-full flex justify-start items-center gap-7 h-14">
-          <div className="h-full">
-            <img
-              className="w-full h-full rounded-full object-cover"
-              src={user.avatar}
-              alt=""
-            />
-          </div>
-          <div className="h-full flex items-center">
-            <input
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setCommentText(e.target.value)
-              }
-              className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none"
-              type="text"
-              placeholder={`Add comment`}
-              value={commentText}
-            />
-          </div>
-          <div className="h-full flex items-center">
-            <button
-              onClick={postComment}
-              className="w-full px-3 py-2 bg-blue-500 text-white rounded-lg"
-            >
-              Send
-            </button>
+      <div className=" absolute bottom-0">
+        <div className=" flex w-full justify-center">
+          <div className="w-full flex justify-center items-center gap-7 h-14">
+            <div className=" w-[40px] h-[40px]">
+              <img
+                className="w-full h-full rounded-full object-cover"
+                src={user.avatar}
+                alt=""
+              />
+            </div>
+            <div className="h-full flex items-center">
+              <input
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setCommentText(e.target.value)
+                }
+                className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none"
+                type="text"
+                placeholder={`Add comment`}
+                value={commentText}
+              />
+            </div>
+            <div className="h-full flex items-center">
+              <button
+                onClick={postComment}
+                className="w-full px-3 py-2 bg-blue-500 text-white rounded-lg"
+              >
+                Send
+              </button>
+            </div>
           </div>
         </div>
       </div>
