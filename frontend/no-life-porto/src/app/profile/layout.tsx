@@ -16,14 +16,11 @@ interface Iuser {
   username: string;
 }
 
-export default function ProfileLayout(
-  {
-    children,
-  }: {
-    children: React.ReactNode;
-  },
-  props
-) {
+export default function ProfileLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [user, setUser] = useState<Iuser[]>([]);
   console.log(user);
   const getUser = async () => {
