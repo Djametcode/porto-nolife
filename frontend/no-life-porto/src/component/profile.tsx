@@ -8,6 +8,8 @@ import { GoPlus } from "react-icons/go";
 import { HiOutlineSquares2X2 } from "react-icons/hi2";
 import { MdVideoLibrary } from "react-icons/md";
 import { FaUserTag } from "react-icons/fa6";
+import { useDispatch } from "react-redux";
+import { updateProfile } from "@/store/slice";
 
 interface IUser {
   _id: string;
@@ -35,6 +37,8 @@ export default function ProfileComponent() {
   useEffect(() => {
     getData();
   }, []);
+
+  const dispatch = useDispatch();
   return (
     <div>
       {user.map((item) => {
@@ -73,7 +77,10 @@ export default function ProfileComponent() {
               <p className=" text-sm text-gray-400">No bio yet</p>
             </div>
             <div className=" flex justify-center gap-2 text-sm font-figtree">
-              <button className=" bg-slate-200/30 h-9 w-[300px] rounded-xl">
+              <button
+                onClick={() => dispatch(updateProfile())}
+                className=" bg-slate-200/30 h-9 w-[300px] rounded-xl"
+              >
                 Edit Profile
               </button>
               <button className=" bg-slate-200/30 h-9 w-[300px] rounded-xl">

@@ -17,7 +17,7 @@ interface Ipost {
 
 export default function ProfilePost() {
   const [post, setPost] = useState<Ipost[]>([]);
-  console.log(post);
+
   const getPost = async () => {
     try {
       const response = await getMyPost();
@@ -32,7 +32,7 @@ export default function ProfilePost() {
   }, []);
 
   return (
-    <div className=" grid grid-cols-3 overflow-hidden pb-12">
+    <div className=" relative grid grid-cols-3 overflow-hidden pb-12">
       {post.map((item) => {
         return item.images.length !== 0 ? (
           item.images[0].imageUrl.includes("video") ? (
