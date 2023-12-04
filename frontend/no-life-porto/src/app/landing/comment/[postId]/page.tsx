@@ -6,11 +6,14 @@ import capitalizeName from "@/handler/capitalizeName";
 import { commentPostHandler } from "@/handler/commentPost";
 import { getCommentPost } from "@/handler/getCommentPost";
 import { getCurrentUser } from "@/handler/getCurrentUser";
+import { refresh } from "@/store/slice";
+import { RootState } from "@/store/store";
 import Link from "next/link";
 import { useParams, useSelectedLayoutSegment } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { IoClose } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
 
 interface IComment {
   commentLike: [];
@@ -27,25 +30,21 @@ interface Iuser {
   avatar: string;
 }
 
-const CommentComponent = () => {
-  const postId: { postId: string } = useParams();
-  console.log(postId);
-
+const CommentComponent = ({ params }: { params: { postId: string } }) => {
+  const refresher = useSelector((state: RootState) => state.global.refresher);
+  const dispatch = useDispatch();
   const [comment, setComment] = useState<IComment[]>([]);
   const [user, setUser] = useState<Iuser>({
     username: "",
     avatar: "",
   });
 
-  const [counter, setCounter] = useState<number>(0);
-  console.log(comment);
-
   const [commentText, setCommentText] = useState<string>("");
   console.log(commentText);
 
   const getAllComment = async () => {
     try {
-      const response = await getCommentPost(postId.postId);
+      const response = await getCommentPost(params.postId);
       setComment(response.comment);
     } catch (error) {
       console.log(error);
@@ -70,8 +69,8 @@ const CommentComponent = () => {
 
   const postComment = async () => {
     try {
-      const response = await commentPostHandler(postId.postId, commentText);
-      setCounter((prev) => prev + 1);
+      const response = await commentPostHandler(params.postId, commentText);
+      dispatch(refresh());
       setCommentText("");
       return response?.data;
     } catch (error) {
@@ -82,7 +81,7 @@ const CommentComponent = () => {
   useEffect(() => {
     getAllComment();
     getUser();
-  }, [counter]);
+  }, [refresher]);
   return (
     <div className=" fixed bottom-0 h-full w-full z-50 bg-black">
       <div className=" flex flex-col gap-9">

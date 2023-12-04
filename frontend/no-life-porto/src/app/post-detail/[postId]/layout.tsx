@@ -11,7 +11,7 @@ export default function PostDetailLayoutComponent({
 }) {
   const router = useRouter();
   return (
-    <div className=" bg-black h-full">
+    <div className=" md:max-w-[450px] w-full bg-black h-screen">
       <div className=" h-14 flex items-center font-figtree gap-4 justify-start pl-3 bg-black text-white">
         <div onClick={() => router.back()} className=" cursor-pointer">
           <FaArrowLeftLong size={20} />

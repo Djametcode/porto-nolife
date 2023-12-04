@@ -68,7 +68,7 @@ export default function PostDetailComponent({
               <div className=" w-full h-full">
                 {item.images.length > 0 ? (
                   item.images[0].imageUrl.includes("video") ? (
-                    <div className=" h-[400px]">
+                    <div className=" h-[450px]">
                       <video
                         className=" h-full w-full"
                         src={item.images[0].imageUrl}
@@ -93,7 +93,10 @@ export default function PostDetailComponent({
               <FooterPostComponent
                 _id={item._id}
                 image={item.images}
-                createdBy={{ username: item.createdBy.username }}
+                createdBy={{
+                  username: item.createdBy.username,
+                  avatar: item.createdBy.avatar,
+                }}
                 postText={item.postText}
                 createdDate={item.createdDate}
                 like={item.like}

@@ -18,7 +18,7 @@ const AuthLayout = ({ children }: Children) => {
         <div className=" flex justify-center">
           <div className=" flex text-sm gap-2">
             <p>Not have account? </p>
-            <Link className=" text-blue-400" href={"/auth/signup"}>
+            <Link className=" text-blue-450" href={"/auth/signup"}>
               create account
             </Link>
           </div>

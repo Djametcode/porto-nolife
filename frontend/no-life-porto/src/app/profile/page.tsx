@@ -2,9 +2,11 @@
 "use client";
 
 import { getMyPost } from "@/handler/getMyPost";
+import { RootState } from "@/store/store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 interface ImageUrl {
   imageUrl: string;
@@ -19,6 +21,7 @@ interface Ipost {
 export default function ProfilePost() {
   const [post, setPost] = useState<Ipost[]>([]);
   const router = useRouter();
+  const refresher = useSelector((state: RootState) => state.global.refresher);
 
   const getPost = async () => {
     try {
@@ -31,7 +34,7 @@ export default function ProfilePost() {
 
   useEffect(() => {
     getPost();
-  }, []);
+  }, [refresher]);
 
   return (
     <div className=" relative grid grid-cols-3 overflow-hidden pb-12">

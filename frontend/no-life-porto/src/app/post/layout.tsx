@@ -49,7 +49,7 @@ export default function PostLayout({ children }: Children) {
     }
   }, [token]);
   return (
-    <div className=" w-screen h-full md:hidden">
+    <div className=" w-screen h-full md:max-w-[450px]">
       <div className=" sticky top-0 text-white bg-black p-3 flex items-center gap-5">
         <IoClose size={30} />
         <h1 className=" font-figtree text-lg">New Post</h1>

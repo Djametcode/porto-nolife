@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 import capitalizeName from "@/handler/capitalizeName";
 import updateAvatar from "@/handler/updateAvatar";
-import { avatarUpdate, finishUpdate } from "@/store/slice";
+import { avatarUpdate, finishUpdate, refresh } from "@/store/slice";
 import { RootState } from "@/store/store";
 import axios from "axios";
 import { useState } from "react";
@@ -33,6 +33,7 @@ export default function UpdateProfile(data: IData) {
       setLoading(true);
       const response = await updateAvatar(avatar as File);
       console.log(response);
+      dispatch(refresh());
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -40,7 +41,7 @@ export default function UpdateProfile(data: IData) {
   };
 
   return (
-    <div className=" w-screen h-screen fixed top-0 z-50 bg-black">
+    <div className=" md:max-w-[450px] w-screen h-screen fixed top-0 z-50 bg-black">
       <div className=" flex gap-8 text-white h-16 items-center pl-3">
         <div
           onClick={() => dispatch(finishUpdate())}
@@ -124,7 +125,7 @@ export default function UpdateProfile(data: IData) {
             <div className=" flex justify-center mt-7">
               <button
                 onClick={(e: React.FormEvent) => updateProfileHandler(e)}
-                className=" w-[60px] h-[35px] flex items-center justify-center rounded-md text-black bg-white"
+                className=" p-2 flex items-center justify-center rounded-md text-black bg-white"
               >
                 {loading ? "updating" : "save"}
               </button>

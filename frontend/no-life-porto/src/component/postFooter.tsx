@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   PiHeartLight,
   PiChatCircleLight,
@@ -27,7 +28,7 @@ interface IPost {
   comment: [];
   postText: string;
   createdDate: string;
-  createdBy: { username: string };
+  createdBy: { username: string; avatar: string };
   image: any[];
 }
 
@@ -66,14 +67,31 @@ const FooterPostComponent = (data: IPost) => {
           <PiBookmarkSimpleLight size={23} />
         </div>
       </div>
-      <div className=" text-sm flex flex-col gap-1">
+      <div className=" text-sm flex flex-col gap-[3px]">
         <p>{data.like.length} like</p>
         <div className=" flex gap-2">
           <p>{capitalizeName(data.createdBy.username)}</p>
           {data.image.length == 0 ? null : <p>{data.postText}</p>}
         </div>
-        <p className=" text-xs text-gray-200"> {data.comment.length} comment</p>
-        <p className=" text-xs text-slate-400">{timeAgo(data.createdDate)}</p>
+        <p className=" text-xs text-gray-450">
+          {" "}
+          see {data.comment.length} comment
+        </p>
+        <div className=" flex gap-3">
+          <div className=" w-[30px] h-[30px]">
+            <img
+              className=" w-full h-full rounded-full object-cover"
+              src={data.createdBy.avatar}
+              alt=""
+            />
+          </div>
+          <input
+            className=" bg-transparent placeholder:text-xs font-figtree focus:outline-none text-xs"
+            type="text"
+            placeholder="add comment"
+          />
+        </div>
+        <p className=" text-xs text-slate-450">{timeAgo(data.createdDate)}</p>
       </div>
     </div>
   );

@@ -100,7 +100,7 @@ export default function SignUpComponent() {
           }
         />
       </div>
-      <div className=" bg-blue-400 p-3 rounded-lg flex justify-center">
+      <div className=" bg-blue-450 p-3 rounded-lg flex justify-center">
         <button
           onClick={(e: React.FormEvent) => registUser(e)}
           className=" text-sm"
@@ -124,7 +124,7 @@ export default function SignUpComponent() {
         <p className=" text-sm">OR</p>
         <hr className=" w-full" />
       </div>
-      <div className=" flex gap-4 text-blue-400 p-3 items-center justify-center">
+      <div className=" flex gap-4 text-blue-450 p-3 items-center justify-center">
         <FaFacebookSquare size={25} />
         <p className=" text-sm">continue with facebook</p>
       </div>

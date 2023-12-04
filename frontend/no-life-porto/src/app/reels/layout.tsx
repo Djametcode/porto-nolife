@@ -49,7 +49,7 @@ export default function ReelsLayout({
   }, [token]);
 
   return (
-    <div className=" h-screen bg-black text-white font-figtree">
+    <div className=" md:max-w-[450px] w-full h-screen bg-black text-white font-figtree">
       {children}
       {user.map((item) => {
         return <NavbarComponent key={item.avatar} avatar={item.avatar} />;

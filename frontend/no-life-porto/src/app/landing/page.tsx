@@ -4,6 +4,7 @@ import FooterPostComponent from "@/component/postFooter";
 import capitalizeName from "@/handler/capitalizeName";
 import { getAllPostHandler } from "@/handler/getAllPost";
 import { RootState } from "@/store/store";
+import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { BiSolidUserCircle } from "react-icons/bi";
 import { useSelector } from "react-redux";
@@ -45,13 +46,18 @@ export default function HomeComponent() {
     getAllPost();
   }, [refresher]);
 
+  const router = useRouter();
+
   return (
     <div className=" p-3 h-full w-full text-white font-geologica flex flex-col gap-7 pb-14">
       {post.map((item) => {
         return (
-          <Fragment key={item._id}>
+          <div key={item._id}>
             <div className=" flex flex-col gap-3 w-full h-full">
-              <div className="">
+              <div
+                onClick={() => router.push(`user-detail/${item._id}`)}
+                className=" cursor-pointer"
+              >
                 {item.createdBy.avatar === "" ? (
                   <div className=" flex items-center gap-3 font-geologica">
                     <BiSolidUserCircle size={35} />
@@ -73,7 +79,7 @@ export default function HomeComponent() {
               <div className=" w-full h-full">
                 {item.images.length > 0 ? (
                   item.images[0].imageUrl.includes("video") ? (
-                    <div className=" h-[400px]">
+                    <div className=" h-[450px]">
                       <video
                         className=" h-full w-full"
                         src={item.images[0].imageUrl}
@@ -98,14 +104,17 @@ export default function HomeComponent() {
               <FooterPostComponent
                 _id={item._id}
                 image={item.images}
-                createdBy={{ username: item.createdBy.username }}
+                createdBy={{
+                  username: item.createdBy.username,
+                  avatar: item.createdBy.avatar,
+                }}
                 postText={item.postText}
                 createdDate={item.createdDate}
                 like={item.like}
                 comment={item.comment}
               />
             </div>
-          </Fragment>
+          </div>
         );
       })}
     </div>

@@ -138,7 +138,7 @@ export default function ReelsComponent() {
                   <div className=" font-figtree text-sm">
                     <p>{item.postText}</p>
                   </div>
-                  <div className="  absolute right-3 bottom-9">
+                  <div className="  absolute right-1 bottom-9">
                     <div className=" flex flex-col gap-5 p-4">
                       <div className=" flex flex-col gap-2 items-center">
                         {item.like.findIndex(
@@ -161,14 +161,11 @@ export default function ReelsComponent() {
                       <div className=" flex flex-col gap-2 items-center">
                         <PiChatCircleLight size={28} />
                         <p className=" text-sm font-figtree">
-                          {item.like.length}
+                          {item.comment.length}
                         </p>
                       </div>
                       <div className=" flex flex-col gap-2 items-center">
                         <PiPaperPlaneTiltLight size={28} />
-                        <p className=" text-sm font-figtree">
-                          {item.like.length}
-                        </p>
                       </div>
                       <div className=" flex flex-col items-center">
                         <HiOutlineDotsVertical size={27} />

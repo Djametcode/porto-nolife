@@ -46,7 +46,7 @@ const LandingLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [token]);
   return (
-    <div className=" md:hidden w-screen h-full bg-black relative">
+    <div className=" md:max-w-[450px] w-screen h-full bg-black relative">
       <NavbarTopComponent />
       {user.map((item) => {
         return <StoryComponent key={item.avatar} avatar={item.avatar} />;

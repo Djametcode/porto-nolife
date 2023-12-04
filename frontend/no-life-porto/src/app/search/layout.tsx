@@ -49,7 +49,7 @@ export default function SearchLayout({ children }: Children) {
     }
   }, [token]);
   return (
-    <div className=" md:hidden">
+    <div className=" md:max-w-[450px] w-full">
       {children}
       {user.map((item) => {
         return <NavbarComponent key={item.avatar} avatar={item.avatar} />;

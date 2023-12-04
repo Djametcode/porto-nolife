@@ -27,7 +27,6 @@ export default function ProfileLayout({
 }) {
   const [user, setUser] = useState<Iuser[]>([]);
   const refresher = useSelector((state: RootState) => state.global.refresher);
-  console.log(user);
   const getUser = async () => {
     try {
       const response: {
@@ -35,7 +34,6 @@ export default function ProfileLayout({
         user: { username: string; avatar: string; email: string };
       } = await getCurrentUser();
       setUser([
-        ...user,
         {
           username: response.user.username,
           avatar: response.user.avatar,
@@ -62,7 +60,7 @@ export default function ProfileLayout({
   console.log(update);
 
   return (
-    <div className=" bg-black relative">
+    <div className=" md:max-w-[450px] justify-center bg-black relative">
       {update
         ? user.map((item) => {
             return (

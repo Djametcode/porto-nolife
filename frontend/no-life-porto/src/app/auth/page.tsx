@@ -74,11 +74,11 @@ export default function AuthComponent() {
         />
       </div>
       <div className=" flex justify-end">
-        <p className=" text-sm text-blue-400 font-extrabold">
+        <p className=" text-sm text-blue-450 font-extrabold">
           Forget password?
         </p>
       </div>
-      <div className=" bg-blue-400 p-3 rounded-lg flex justify-center">
+      <div className=" bg-blue-450 p-3 rounded-lg flex justify-center">
         <button
           onClick={(e: React.FormEvent) => loginUser(e)}
           className=" text-sm font-extrabold"
@@ -102,7 +102,7 @@ export default function AuthComponent() {
         <p className=" text-sm">OR</p>
         <hr className=" w-full" />
       </div>
-      <div className=" flex gap-4 text-blue-400 p-3 items-center justify-center">
+      <div className=" flex gap-4 text-blue-450 p-3 items-center justify-center">
         <FaFacebookSquare size={25} />
         <p className=" text-sm">continue with facebook</p>
       </div>

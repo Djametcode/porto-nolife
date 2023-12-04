@@ -8,8 +8,9 @@ import { GoPlus } from "react-icons/go";
 import { HiOutlineSquares2X2 } from "react-icons/hi2";
 import { MdVideoLibrary } from "react-icons/md";
 import { FaUserTag } from "react-icons/fa6";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateProfile } from "@/store/slice";
+import { RootState } from "@/store/store";
 
 interface IUser {
   _id: string;
@@ -22,13 +23,13 @@ interface IUser {
 
 export default function ProfileComponent() {
   const [user, setUser] = useState<IUser[]>([]);
-  console.log(user);
+  const refresher = useSelector((state: RootState) => state.global.refresher);
 
   const getData = async () => {
     try {
       const response = await getCurrentUser();
       console.log(response);
-      setUser([...user, response.user]);
+      setUser([response.user]);
     } catch (error) {
       console.log(error);
     }
@@ -36,7 +37,7 @@ export default function ProfileComponent() {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [refresher]);
 
   const dispatch = useDispatch();
   return (
@@ -51,7 +52,7 @@ export default function ProfileComponent() {
               <div className=" w-1/3">
                 <div className=" w-[75px] h-[75px]">
                   <img
-                    className=" w-full h-full rounded-full"
+                    className=" w-full h-full rounded-full object-cover"
                     src={item.avatar}
                     alt=""
                   />
@@ -74,7 +75,7 @@ export default function ProfileComponent() {
             </div>
             <div className=" font-figtree">
               <h1>{capitalizeName(item.username)}</h1>
-              <p className=" text-sm text-gray-400">No bio yet</p>
+              <p className=" text-sm text-gray-450">No bio yet</p>
             </div>
             <div className=" flex justify-center gap-2 text-sm font-figtree">
               <button
