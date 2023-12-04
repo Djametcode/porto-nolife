@@ -36,8 +36,6 @@ app.use("/api/v17/no-life/auth", authRouter);
 app.use("/api/v17/no-life/post", postRouter);
 app.use('/api/v17/no-life/user', userRoute)
 
-const mongo_url = configSchema.parse(process.env);
-
 const startServer = async () => {
   try {
     await connectDB(process.env.MONGO_URL);
