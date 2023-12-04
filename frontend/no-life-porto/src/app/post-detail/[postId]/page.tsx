@@ -1,60 +1,55 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import getPostById from "@/handler/getPostById";
+import axios from "axios";
+import { useParams } from "next/navigation";
+import { Fragment, useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { IPost } from "@/app/landing/page";
 import FooterPostComponent from "@/component/postFooter";
 import capitalizeName from "@/handler/capitalizeName";
-import { getAllPostHandler } from "@/handler/getAllPost";
-import { RootState } from "@/store/store";
-import { Fragment, useEffect, useState } from "react";
-import { BiSolidUserCircle } from "react-icons/bi";
-import { useSelector } from "react-redux";
+import { BiSolidCircle } from "react-icons/bi";
+import { useRouter } from "next/navigation";
 
-export interface IPost {
-  _id: string;
-  postText: string;
-  images: [{ imageUrl: string }];
-  like: [
-    {
-      likeId: {
-        createdBy: {
-          _id: string;
-        };
-      };
-    }
-  ];
-  comment: [];
-  createdBy: { username: string; avatar: string };
-  createdDate: string;
-}
-
-export default function HomeComponent() {
+export default function PostDetailComponent({
+  params,
+}: {
+  params: { postId: string };
+}) {
+  console.log(params.postId);
   const [post, setPost] = useState<IPost[]>([]);
-  const [counter, setCounter] = useState<number>(0);
-  const [comment, setComment] = useState<boolean>(false);
-  const refresher = useSelector((state: RootState) => state.global.refresher);
+  console.log(post);
 
-  const getAllPost = async () => {
+  const getPostHandler = async () => {
     try {
-      const response = await getAllPostHandler();
-      setPost(response.post);
+      const response = await axios.get(
+        `http://localhost:3000/api/v17/no-life/post/get-post/${params.postId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+      const item = response.data;
+      setPost([...post, item.post]);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    getAllPost();
-  }, [refresher]);
-
+    getPostHandler();
+  }, []);
   return (
-    <div className=" p-3 h-full w-full text-white font-geologica flex flex-col gap-7 pb-14">
+    <div className=" p-3 h-full w-full text-white bg-black font-geologica flex flex-col gap-7 pb-14">
       {post.map((item) => {
         return (
           <Fragment key={item._id}>
             <div className=" flex flex-col gap-3 w-full h-full">
-              <div className="">
+              <div className=" text-white">
                 {item.createdBy.avatar === "" ? (
                   <div className=" flex items-center gap-3 font-geologica">
-                    <BiSolidUserCircle size={35} />
+                    <BiSolidCircle size={35} />
                     <p>{capitalizeName(item.createdBy.username)}</p>
                   </div>
                 ) : (

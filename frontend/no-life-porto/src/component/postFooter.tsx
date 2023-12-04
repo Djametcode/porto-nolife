@@ -72,6 +72,7 @@ const FooterPostComponent = (data: IPost) => {
           <p>{capitalizeName(data.createdBy.username)}</p>
           {data.image.length == 0 ? null : <p>{data.postText}</p>}
         </div>
+        <p className=" text-xs text-gray-200"> {data.comment.length} comment</p>
         <p className=" text-xs text-slate-400">{timeAgo(data.createdDate)}</p>
       </div>
     </div>

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.followUser = exports.getCurrentUser = exports.updateAvatar = exports.deleteAccount = void 0;
+exports.followUser = exports.getCurrentUser = exports.updateUser = exports.deleteAccount = void 0;
 const userModel_1 = require("../model/userModel");
 const cloudinary_1 = require("cloudinary");
 const postModel_1 = require("../model/postModel");
@@ -48,8 +48,8 @@ const deleteAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.deleteAccount = deleteAccount;
-const updateAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let file = req.file;
+const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { file } = req;
     let userId = req.user.userId;
     if (!file) {
         return res.status(400).json({ msg: "No file attaced" });
@@ -59,9 +59,9 @@ const updateAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (!user) {
             return res.status(404).json({ msg: "Token not valid" });
         }
-        let result = yield cloudinary_1.v2.uploader.upload(file.path, {
-            folder: "Testing",
-            resource_type: "auto",
+        const result = yield cloudinary_1.v2.uploader.upload(file.path, {
+            folder: 'Testing',
+            resource_type: 'auto'
         });
         const updatedUser = yield userModel_1.userModel.findOneAndUpdate({ _id: userId }, { avatar: result.secure_url }, { new: true });
         return res.status(200).json({ msg: "success", updatedUser });
@@ -70,7 +70,7 @@ const updateAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         console.log(error);
     }
 });
-exports.updateAvatar = updateAvatar;
+exports.updateUser = updateUser;
 const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield userModel_1.userModel.findOne({ _id: req.user.userId });

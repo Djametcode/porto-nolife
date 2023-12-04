@@ -4,10 +4,10 @@ import { authMiddleware } from '../middleware/auth'
 import { upload } from '../middleware/multer'
 const router = express.Router()
 
-router.post('/create-post', authMiddleware, upload, createPost)
-router.put('/update-post', authMiddleware, upload, updatePost)
+router.post('/create-post', authMiddleware, upload.single('file'), createPost)
+router.put('/update-post', authMiddleware, upload.single('file'), updatePost)
 router.get('/get-all-post', getAllPost)
-router.get('/get-post/:id', getPostById)
+router.get('/get-post/:id', authMiddleware, getPostById)
 router.delete('/delete-post/:id', authMiddleware, deletePost)
 router.post('/like-post/:id', authMiddleware, likePost)
 router.delete('/unlike-post', authMiddleware, unLikePost)

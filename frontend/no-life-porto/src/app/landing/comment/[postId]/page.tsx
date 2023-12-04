@@ -84,11 +84,11 @@ const CommentComponent = () => {
     getUser();
   }, [counter]);
   return (
-    <div className=" fixed bottom-0 h-full w-full z-50 bg-slate-200 p-2">
+    <div className=" fixed bottom-0 h-full w-full z-50 bg-black">
       <div className=" flex flex-col gap-9">
-        <div className=" flex justify-center w-full font-figtree p-3">
-          <h1 className=" text-xl"> Comment</h1>
-          <div className=" absolute right-9 top-5">
+        <div className=" flex justify-center items-center w-full font-figtree h-16 text-white">
+          <h1 className=" text-lg"> Comment</h1>
+          <div className=" absolute right-9">
             <Link href={"/landing"}>
               <IoClose size={25} />
             </Link>
@@ -106,7 +106,7 @@ const CommentComponent = () => {
                       alt=""
                     />
                   </div>
-                  <div className=" font-figtree flex flex-col">
+                  <div className=" font-figtree flex flex-col text-white">
                     <p className=" p-[1px] text-[12px] font-extrabold">
                       {capitalizeName(item.createdBy.username)}
                     </p>
@@ -116,7 +116,7 @@ const CommentComponent = () => {
                       <p>reply</p>
                     </div>
                   </div>
-                  <div className=" absolute right-10">
+                  <div className=" absolute right-10 text-white">
                     <AiOutlineHeart size={18} />
                   </div>
                 </div>
@@ -124,36 +124,34 @@ const CommentComponent = () => {
             );
           })}
         </div>
-      </div>
-      <div className=" absolute bottom-0">
-        <div className=" flex w-full justify-center">
-          <div className="w-full flex justify-center items-center gap-7 h-14">
-            <div className=" w-[40px] h-[40px]">
-              <img
-                className="w-full h-full rounded-full object-cover"
-                src={user.avatar}
-                alt=""
-              />
-            </div>
-            <div className="h-full flex items-center">
-              <input
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setCommentText(e.target.value)
-                }
-                className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none"
-                type="text"
-                placeholder={`Add comment`}
-                value={commentText}
-              />
-            </div>
-            <div className="h-full flex items-center">
-              <button
-                onClick={postComment}
-                className="w-full px-3 py-2 bg-blue-500 text-white rounded-lg"
-              >
-                Send
-              </button>
-            </div>
+      </div>{" "}
+      <div className=" absolute bottom-0 left-0 w-full bg-slate-500/20 p-3">
+        <div className=" w-full flex justify-evenly gap-3 items-center h-14">
+          <div className=" w-[40px] h-[40px]">
+            <img
+              className="w-full h-full rounded-full object-cover"
+              src={user.avatar}
+              alt=""
+            />
+          </div>
+          <div className=" w-[250px] h-full flex items-center">
+            <input
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setCommentText(e.target.value)
+              }
+              className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none"
+              type="text"
+              placeholder={`Add comment`}
+              value={commentText}
+            />
+          </div>
+          <div className="h-full flex items-center">
+            <button
+              onClick={postComment}
+              className="w-full px-3 py-2 bg-blue-500 text-white rounded-lg"
+            >
+              Send
+            </button>
           </div>
         </div>
       </div>

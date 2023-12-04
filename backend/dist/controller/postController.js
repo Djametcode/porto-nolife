@@ -75,10 +75,11 @@ exports.getAllPost = getAllPost;
 const getPostById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        const post = yield postModel_1.postModel.findOne({ _id: id });
+        const post = yield postModel_1.postModel.findOne({ _id: id }).populate({ path: "createdBy", select: ["username", "avatar"] }).populate({ path: "like.likeId", populate: { path: "createdBy", select: ["_id", "username"] } });
         if (!post) {
             return res.status(404).json({ msg: "Fail, post not found" });
         }
+        return res.status(200).json({ msg: 'success', post });
     }
     catch (error) {
         console.log(error);

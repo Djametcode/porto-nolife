@@ -73,11 +73,13 @@ const getAllPost = async (req: Request, res: Response) => {
 const getPostById = async (req: Request, res: Response) => {
     const { id } = req.params
     try {
-        const post = await postModel.findOne({ _id: id });
+        const post = await postModel.findOne({ _id: id }).populate({ path: "createdBy", select: ["username", "avatar"] }).populate({ path: "like.likeId", populate: { path: "createdBy", select: ["_id", "username"] } });
 
         if (!post) {
             return res.status(404).json({ msg: "Fail, post not found" })
         }
+
+        return res.status(200).json({ msg: 'success', post })
     } catch (error) {
         console.log(error)
     }

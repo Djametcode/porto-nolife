@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from 'jsonwebtoken'
+import jwt, { Secret } from 'jsonwebtoken'
 
 interface IPayload {
     userId: string;
@@ -15,7 +15,7 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
 
     const token = authHeader.split(" ")[1]
     try {
-        const payload = await jwt.verify(token, process.env.JWT_SECRET) as IPayload
+        const payload = await jwt.verify(token, process.env.JWT_SECRET as Secret) as IPayload
         req.user = { userId: payload.userId, email: payload.email }
         next()
     } catch (error) {

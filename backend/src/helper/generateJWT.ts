@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { Secret } from "jsonwebtoken";
 import { Types } from "mongoose";
 
 interface Tosign {
@@ -7,7 +7,7 @@ interface Tosign {
 }
 
 const generateJWT = (data: Tosign) => {
-    const token = jwt.sign({ userId: data.id, email: data.email }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_TIMES })
+    const token = jwt.sign({ userId: data.id, email: data.email }, process.env.JWT_SECRET as Secret, { expiresIn: process.env.JWT_TIMES })
     return token;
 }
 

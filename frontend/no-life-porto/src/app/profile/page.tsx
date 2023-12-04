@@ -2,9 +2,9 @@
 "use client";
 
 import { getMyPost } from "@/handler/getMyPost";
-import { RootState } from "@/store/store";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 
 interface ImageUrl {
   imageUrl: string;
@@ -13,10 +13,12 @@ interface ImageUrl {
 interface Ipost {
   images: ImageUrl[];
   postText: string;
+  _id: string;
 }
 
 export default function ProfilePost() {
   const [post, setPost] = useState<Ipost[]>([]);
+  const router = useRouter();
 
   const getPost = async () => {
     try {
@@ -36,7 +38,10 @@ export default function ProfilePost() {
       {post.map((item) => {
         return item.images.length !== 0 ? (
           item.images[0].imageUrl.includes("video") ? (
-            <div className=" h-[150px]">
+            <div
+              onClick={() => router.push(`post-detail/${item._id}`)}
+              className=" cursor-pointer h-[150px]"
+            >
               <video
                 className=" h-full w-full object-cover"
                 controls
@@ -44,18 +49,21 @@ export default function ProfilePost() {
               />
             </div>
           ) : (
-            <div className=" h-[150px]">
+            <Link href={`post-detail/${item._id}`} className=" h-[150px]">
               <img
                 className=" w-full h-full object-cover"
                 src={item.images[0].imageUrl}
                 alt=""
               />
-            </div>
+            </Link>
           )
         ) : (
-          <div className=" p-2 h-[150px] bg-black text-white font-figtree">
+          <Link
+            href={`post-detail/${item._id}`}
+            className=" p-2 h-[150px] bg-black text-white font-figtree"
+          >
             <p className=" text-xs">{item.postText}</p>
-          </div>
+          </Link>
         );
       })}
     </div>

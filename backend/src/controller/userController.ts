@@ -45,9 +45,11 @@ const deleteAccount = async (req: Request, res: Response) => {
   }
 };
 
-const updateAvatar = async (req: Request, res: Response) => {
-  let file = req.file;
-  let userId = req.user.userId;
+const updateUser = async (req: Request, res: Response) => {
+
+  const { file } = req
+
+  let userId = req.user.userId
 
   if (!file) {
     return res.status(400).json({ msg: "No file attaced" });
@@ -60,10 +62,10 @@ const updateAvatar = async (req: Request, res: Response) => {
       return res.status(404).json({ msg: "Token not valid" });
     }
 
-    let result = await cloudinary.uploader.upload(file.path, {
-      folder: "Testing",
-      resource_type: "auto",
-    });
+    const result = await cloudinary.uploader.upload(file.path, {
+      folder: 'Testing',
+      resource_type: 'auto'
+    })
 
     const updatedUser = await userModel.findOneAndUpdate(
       { _id: userId },
@@ -144,4 +146,4 @@ const followUser = async (req: Request, res: Response) => {
   }
 };
 
-export { deleteAccount, updateAvatar, getCurrentUser, followUser };
+export { deleteAccount, updateUser, getCurrentUser, followUser };

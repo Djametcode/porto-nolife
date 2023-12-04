@@ -27,7 +27,9 @@ cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
 });
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3001']
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/api/v17/no-life/auth", authRouter);
@@ -38,11 +40,8 @@ const mongo_url = configSchema.parse(process.env);
 
 const startServer = async () => {
   try {
-    if (!mongo_url) {
-      console.log("Validate error");
-    }
-    await connectDB(mongo_url.MONGO_URL);
-    app.listen(process.env.PORT || 3000);
+    await connectDB(process.env.MONGO_URL);
+    app.listen(process.env.PORT || 3000, () => console.log("server running"));
   } catch (error) {
     console.log(error);
   }

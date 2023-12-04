@@ -5,9 +5,11 @@ import capitalizeName from "@/handler/capitalizeName";
 import updateAvatar from "@/handler/updateAvatar";
 import { avatarUpdate, finishUpdate } from "@/store/slice";
 import { RootState } from "@/store/store";
+import axios from "axios";
 import { useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
+import Cookies from "js-cookie";
 
 interface IData {
   avatar: string;
@@ -23,14 +25,15 @@ export default function UpdateProfile(data: IData) {
 
   const [avatar, setAvatar] = useState<string | File>(data.avatar);
   console.log(avatar);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const updateProfileHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const item = new FormData();
-      item.append("file", avatar as Blob);
-      const response = await updateAvatar(item);
+      setLoading(true);
+      const response = await updateAvatar(avatar as File);
       console.log(response);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -123,7 +126,7 @@ export default function UpdateProfile(data: IData) {
                 onClick={(e: React.FormEvent) => updateProfileHandler(e)}
                 className=" w-[60px] h-[35px] flex items-center justify-center rounded-md text-black bg-white"
               >
-                save
+                {loading ? "updating" : "save"}
               </button>
             </div>
           ) : null}
