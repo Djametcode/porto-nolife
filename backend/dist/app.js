@@ -38,14 +38,13 @@ cloudinary_1.v2.config({
     cloud_name: process.env.CLOUD_NAME,
 });
 app.use((0, cors_1.default)({
-    origin: ['http://localhost:3001', 'https://porto-nolife.vercel.app']
+    origin: ['*']
 }));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use("/api/v17/no-life/auth", authRoute_1.authRouter);
 app.use("/api/v17/no-life/post", postRoute_1.postRouter);
 app.use('/api/v17/no-life/user', userRoute_1.userRoute);
-const mongo_url = configSchema.parse(process.env);
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, connectDB_1.connectDB)(process.env.MONGO_URL);
