@@ -28,7 +28,7 @@ cloudinary.config({
 });
 
 app.use(cors({
-  origin: ['http://localhost:3001']
+  origin: ['http://localhost:3001', 'https://porto-nolife.vercel.app']
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

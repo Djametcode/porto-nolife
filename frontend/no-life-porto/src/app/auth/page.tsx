@@ -1,10 +1,9 @@
 "use client";
 
 import { loginHandler } from "@/handler/loginHandlet";
-import { useState } from "react";
 import { FaFacebookSquare } from "react-icons/fa";
 import Cookies from "js-cookie";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { finishLoading, startLoading } from "@/store/slice";

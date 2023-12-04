@@ -38,7 +38,7 @@ cloudinary_1.v2.config({
     cloud_name: process.env.CLOUD_NAME,
 });
 app.use((0, cors_1.default)({
-    origin: ['http://localhost:3001']
+    origin: ['http://localhost:3001', 'https://porto-nolife.vercel.app']
 }));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
