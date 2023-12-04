@@ -3,17 +3,13 @@
 
 import capitalizeName from "@/handler/capitalizeName";
 import { getAllPostHandler } from "@/handler/getAllPost";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { FaPlay, FaPause } from "react-icons/fa6";
+import { useEffect, useState } from "react";
 import { refresh } from "@/store/slice";
 import {
   PiHeartLight,
   PiChatCircleLight,
   PiPaperPlaneTiltLight,
-  PiBookmarkSimpleLight,
   PiHeartFill,
-  PiHeadlightsFill,
 } from "react-icons/pi";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Cookies from "js-cookie";
@@ -21,6 +17,8 @@ import { likePostHandler } from "@/handler/likeHandler";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { followUserHandler } from "@/handler/followUser";
+import { FaArrowLeftLong } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 
 interface IVideo {
   imageUrl: string;
@@ -54,6 +52,7 @@ interface IReels {
 }
 
 export default function ReelsComponent() {
+  const router = useRouter();
   const [video, setVideo] = useState<IReels[]>([]);
   const dispatch = useDispatch();
   const refresher = useSelector((state: RootState) => state.global.refresher);
@@ -98,13 +97,18 @@ export default function ReelsComponent() {
   };
 
   return (
-    <div className=" w-full h-screen overflow-scroll snap-y snap-mandatory snap-always">
+    <div className=" w-full h-screen overflow-scroll snap-y snap-always snap-mandatory">
       <div className=" fixed z-40 top-5 left-5">
-        <h1 className=" font-figtree font-extrabold text-2xl">Reels</h1>
+        <div className=" flex gap-8 items-center h-14">
+          <div onClick={() => router.back()} className=" cursor-pointer">
+            <FaArrowLeftLong size={20} />
+          </div>
+          <h1 className=" font-figtree font-extrabold text-2xl">Reels</h1>
+        </div>
       </div>
       {filter.map((item) => {
         return (
-          <div className=" relative w-full h-full snap-center" key={item._id}>
+          <div className=" relative w-full h-full snap-start" key={item._id}>
             <video
               controls
               className=" absolute top-0 z-10 w-full h-full object-contain"

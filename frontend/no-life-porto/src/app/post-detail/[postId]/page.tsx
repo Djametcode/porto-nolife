@@ -9,7 +9,6 @@ import { IPost } from "@/app/landing/page";
 import FooterPostComponent from "@/component/postFooter";
 import capitalizeName from "@/handler/capitalizeName";
 import { BiSolidCircle } from "react-icons/bi";
-import { useRouter } from "next/navigation";
 
 export default function PostDetailComponent({
   params,
