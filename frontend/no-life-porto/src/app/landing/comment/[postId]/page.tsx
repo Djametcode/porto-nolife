@@ -83,7 +83,7 @@ const CommentComponent = ({ params }: { params: { postId: string } }) => {
     getUser();
   }, [refresher]);
   return (
-    <div className=" fixed bottom-0 h-full w-full z-50 bg-black">
+    <div className=" fixed bottom-0 h-full overflow-scroll w-full z-50 bg-black">
       <div className=" flex flex-col gap-9">
         <div className=" flex justify-center items-center w-full font-figtree h-16 text-white">
           <h1 className=" text-lg"> Comment</h1>
