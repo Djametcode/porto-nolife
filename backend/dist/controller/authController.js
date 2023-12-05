@@ -14,6 +14,7 @@ const userModel_1 = require("../model/userModel");
 const hashPassword_1 = require("../helper/hashPassword");
 const comparePass_1 = require("../helper/comparePass");
 const generateJWT_1 = require("../helper/generateJWT");
+const notifModel_1 = require("../model/notifModel");
 const registUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email, password } = req.body;
     if (!username || !email) {
@@ -45,7 +46,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(400).json({ msg: "Please fill email" });
     }
     try {
-        const user = yield userModel_1.userModel.findOne({ email: email });
+        const user = yield userModel_1.userModel.findOne({ email: email }).populate({ path: "notification.notifId", select: ["notificationText", "createdAt"] });
         if (!user) {
             return res.status(404).json({ msg: "Email not registered yet" });
         }
@@ -54,7 +55,17 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!isPassMatch) {
             return res.status(400).json({ msg: "Password wrong" });
         }
+        const newNotification = new notifModel_1.NotifModel({
+            notificationFor: user._id,
+            createdBy: user._id,
+            notificationText: `New login detected from Unknown Location, not you ? kindly change your password`
+        });
+        const notif = yield notifModel_1.NotifModel.create(newNotification);
+        user.notification.push({
+            notifId: notif._id
+        });
         const token = yield (0, generateJWT_1.generateJWT)({ email: email, id: user._id });
+        yield user.save();
         return res.status(200).json({ msg: "Success", user, token });
     }
     catch (error) {

@@ -5,7 +5,8 @@ import { postModel } from "../model/postModel";
 import { likeModel } from "../model/likeModel";
 import { commentModel } from "../model/commentModel";
 import { replyModel } from "../model/replyModel";
-import { followerModel } from "../model/followerModel";
+import { NotifModel } from "../model/notifModel";
+
 
 const deleteAccount = async (req: Request, res: Response) => {
   const userId = req.user.userId;
@@ -81,7 +82,7 @@ const updateUser = async (req: Request, res: Response) => {
 
 const getCurrentUser = async (req: Request, res: Response) => {
   try {
-    const user = await userModel.findOne({ _id: req.user.userId });
+    const user = await userModel.findOne({ _id: req.user.userId }).populate({ path: "follower.userId" }).populate({ path: "notification.notifId" })
 
     if (!user) {
       return res.status(401).json({ msg: "Token invalid" });
@@ -122,9 +123,21 @@ const followUser = async (req: Request, res: Response) => {
       return res.status(400).json({ msg: "already followed" })
     }
 
+    const newNotification = new NotifModel({
+      notificationFor: id,
+      notificationText: `${user.username} starts following you`,
+      createdBy: userId,
+    })
+
+    const notif = await NotifModel.create(newNotification)
+
     user.following.push({
       userId: targetUser._id,
     });
+
+    targetUser.notification.push({
+      notifId: notif._id
+    })
 
     targetUser.follower.push({
       userId: user._id,
@@ -146,4 +159,38 @@ const followUser = async (req: Request, res: Response) => {
   }
 };
 
-export { deleteAccount, updateUser, getCurrentUser, followUser };
+const getUserById = async (req: Request, res: Response) => {
+  const { id } = req.params
+  const userId = req.user.userId
+
+  try {
+    const user = await userModel.findOne({ _id: userId }).populate({ path: "post.postId", select: ["postText", "images"] }).select(["username", "avatar", "follower", "following", "post"])
+
+    if (!user) {
+      return res.status(401).json({ msg: 'Token invalid' })
+    }
+
+    return res.status(200).json({ msg: "success", user })
+  } catch (error) {
+
+  }
+}
+
+const getMyNotifcation = async (req: Request, res: Response) => {
+  const userId = req.user.userId
+  try {
+    const user = await userModel.findOne({ _id: userId })
+
+    if (!user) {
+      return res.status(401).json({ msg: "Token invalid" })
+    }
+
+    const notif = await NotifModel.find({ notificationFor: userId }).populate({ path: "createdBy", select: ["username", "avatar"] })
+
+    return res.status(200).json({ msg: "success", notif })
+  } catch (error) {
+    return res.status(501).json({ msg: "Internal server error" })
+  }
+}
+
+export { deleteAccount, updateUser, getCurrentUser, followUser, getUserById, getMyNotifcation };

@@ -9,13 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.followUser = exports.getCurrentUser = exports.updateUser = exports.deleteAccount = void 0;
+exports.getMyNotifcation = exports.getUserById = exports.followUser = exports.getCurrentUser = exports.updateUser = exports.deleteAccount = void 0;
 const userModel_1 = require("../model/userModel");
 const cloudinary_1 = require("cloudinary");
 const postModel_1 = require("../model/postModel");
 const likeModel_1 = require("../model/likeModel");
 const commentModel_1 = require("../model/commentModel");
 const replyModel_1 = require("../model/replyModel");
+const notifModel_1 = require("../model/notifModel");
 const deleteAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user.userId;
     try {
@@ -73,7 +74,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.updateUser = updateUser;
 const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield userModel_1.userModel.findOne({ _id: req.user.userId });
+        const user = yield userModel_1.userModel.findOne({ _id: req.user.userId }).populate({ path: "follower.userId" }).populate({ path: "notification.notifId" });
         if (!user) {
             return res.status(401).json({ msg: "Token invalid" });
         }
@@ -104,8 +105,17 @@ const followUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (isFollowed !== -1) {
             return res.status(400).json({ msg: "already followed" });
         }
+        const newNotification = new notifModel_1.NotifModel({
+            notificationFor: id,
+            notificationText: `${user.username} starts following you`,
+            createdBy: userId,
+        });
+        const notif = yield notifModel_1.NotifModel.create(newNotification);
         user.following.push({
             userId: targetUser._id,
+        });
+        targetUser.notification.push({
+            notifId: notif._id
         });
         targetUser.follower.push({
             userId: user._id,
@@ -126,3 +136,32 @@ const followUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.followUser = followUser;
+const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const userId = req.user.userId;
+    try {
+        const user = yield userModel_1.userModel.findOne({ _id: userId }).populate({ path: "post.postId", select: ["postText", "images"] }).select(["username", "avatar", "follower", "following", "post"]);
+        if (!user) {
+            return res.status(401).json({ msg: 'Token invalid' });
+        }
+        return res.status(200).json({ msg: "success", user });
+    }
+    catch (error) {
+    }
+});
+exports.getUserById = getUserById;
+const getMyNotifcation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.user.userId;
+    try {
+        const user = yield userModel_1.userModel.findOne({ _id: userId });
+        if (!user) {
+            return res.status(401).json({ msg: "Token invalid" });
+        }
+        const notif = yield notifModel_1.NotifModel.find({ notificationFor: userId }).populate({ path: "createdBy", select: ["username", "avatar"] });
+        return res.status(200).json({ msg: "success", notif });
+    }
+    catch (error) {
+        return res.status(501).json({ msg: "Internal server error" });
+    }
+});
+exports.getMyNotifcation = getMyNotifcation;

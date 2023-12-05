@@ -4,6 +4,7 @@ import { hashPassword } from "../helper/hashPassword";
 import { comparePass } from "../helper/comparePass";
 import { generateJWT } from "../helper/generateJWT";
 import { v2 as cloudinary } from 'cloudinary'
+import { NotifModel } from "../model/notifModel";
 
 const registUser = async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
@@ -43,7 +44,7 @@ const loginUser = async (req: Request, res: Response) => {
     }
 
     try {
-        const user = await userModel.findOne({ email: email })
+        const user = await userModel.findOne({ email: email }).populate({ path: "notification.notifId", select: ["notificationText", "createdAt"] })
 
         if (!user) {
             return res.status(404).json({ msg: "Email not registered yet" })
@@ -56,7 +57,21 @@ const loginUser = async (req: Request, res: Response) => {
             return res.status(400).json({ msg: "Password wrong" })
         }
 
+        const newNotification = new NotifModel({
+            notificationFor: user._id,
+            createdBy: user._id,
+            notificationText: `New login detected from Unknown Location, not you ? kindly change your password`
+        })
+
+        const notif = await NotifModel.create(newNotification)
+
+        user.notification.push({
+            notifId: notif._id
+        })
+
         const token = await generateJWT({ email: email, id: user._id })
+
+        await user.save()
 
         return res.status(200).json({ msg: "Success", user, token })
     } catch (error) {

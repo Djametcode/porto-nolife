@@ -32,7 +32,23 @@ const userSchema = new Schema({
             },
         },
     ],
-    follower: [],
-    following: [],
+    follower: [{
+            userId: {
+                type: Schema.Types.ObjectId,
+                ref: "User"
+            }
+        }],
+    following: [{
+            userId: {
+                type: Schema.Types.ObjectId,
+                ref: "User"
+            }
+        }],
+    notification: [{
+            notifId: {
+                type: Schema.Types.ObjectId,
+                ref: "Notif"
+            }
+        }]
 });
 exports.userModel = mongoose_1.default.model("User", userSchema);

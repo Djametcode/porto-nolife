@@ -12,6 +12,7 @@ import { redirect } from "next/navigation";
 interface IUser {
   username: string;
   avatar: string;
+  notification: any[];
 }
 
 interface IResponse {
@@ -19,6 +20,7 @@ interface IResponse {
   user: {
     username: string;
     avatar: string;
+    notification: any[];
   };
 }
 
@@ -27,8 +29,13 @@ const LandingLayout = ({ children }: { children: React.ReactNode }) => {
   const getUserDetail = async () => {
     try {
       const response = (await getCurrentUser()) as IResponse;
+      console.log(response);
       setUser([
-        { username: response.user.username, avatar: response.user.avatar },
+        {
+          username: response.user.username,
+          avatar: response.user.avatar,
+          notification: response.user.notification,
+        },
       ]);
     } catch (error) {
       console.log(error);
@@ -47,10 +54,18 @@ const LandingLayout = ({ children }: { children: React.ReactNode }) => {
   }, [token]);
   return (
     <div className=" md:max-w-[450px] w-screen h-full bg-black relative">
-      <NavbarTopComponent />
+      {user.map((item) => {
+        return (
+          <NavbarTopComponent
+            key={item.avatar}
+            notification={item.notification.length}
+          />
+        );
+      })}
       {user.map((item) => {
         return <StoryComponent key={item.avatar} avatar={item.avatar} />;
       })}
+
       {children}
       {user.map((item) => {
         return <NavbarComponent key={item.avatar} avatar={item.avatar} />;

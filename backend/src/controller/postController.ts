@@ -5,6 +5,7 @@ import { userModel } from "../model/userModel";
 import { likeModel } from "../model/likeModel";
 import { commentModel } from "../model/commentModel";
 import { replyModel } from "../model/replyModel";
+import { NotifModel } from "../model/notifModel";
 
 const createPost = async (req: Request, res: Response) => {
     const createdBy = req.user.userId;
@@ -141,8 +142,6 @@ const updatePost = async (req: Request, res: Response) => {
             post.images.push({ imageUrl: result.secure_url })
             await post.save()
 
-
-            // Save the changes to the post
         }
 
         if (updateText) {
@@ -205,6 +204,8 @@ const likePost = async (req: Request, res: Response) => {
 
         const post = await postModel.findOne({ _id: id })
 
+        const targetUser = await userModel.findOne({ _id: post?.createdBy._id })
+
         const check = await likeModel.findOne({ postId: id, createdBy: userId })
         console.log(check)
 
@@ -220,6 +221,20 @@ const likePost = async (req: Request, res: Response) => {
         const like = await likeModel.create(newLike)
         post?.like.push({ likeId: like._id })
         await post?.save()
+
+        const newNotification = new NotifModel({
+            notificationFor: post?.createdBy._id,
+            createdBy: user._id,
+            notificationText: `${user.username} like your post`
+        })
+
+        const notif = await NotifModel.create(newNotification)
+
+        targetUser?.notification.push({
+            notifId: notif._id
+        })
+
+        await targetUser?.save()
 
         return res.status(200).json({ msg: "Success like post", post })
     } catch (error) {
@@ -261,7 +276,14 @@ const commentPost = async (req: Request, res: Response) => {
     }
 
     try {
+        const user = await userModel.findOne({ _id: userId })
+
+        if (!user) {
+            return res.status(401).json({ msg: "Token Invalid" })
+        }
+
         const post = await postModel.findOne({ _id: postId })
+        const targetUser = await userModel.findOne({ _id: post?.createdBy._id })
 
         if (!post) {
             return res.status(404).json({ msg: "Post not found or deleted" })
@@ -277,6 +299,20 @@ const commentPost = async (req: Request, res: Response) => {
 
         post.comment.push({ commentId: comment._id })
         await post.save()
+
+        const newNotification = new NotifModel({
+            notificationText: `${user.username} commented on your post`,
+            notificationFor: targetUser?._id,
+            createdBy: user._id
+        })
+
+        const notif = await NotifModel.create(newNotification)
+
+        targetUser?.notification.push({
+            notifId: notif._id
+        })
+
+        await targetUser?.save()
 
         return res.status(200).json({ msg: "success", comment })
     } catch (error) {

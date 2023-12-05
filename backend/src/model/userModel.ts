@@ -13,6 +13,10 @@ interface IPost {
   postId: Types.ObjectId;
 }
 
+interface INotification {
+  notifId: Types.ObjectId;
+}
+
 interface IUser extends Document {
   username: string;
   email: string;
@@ -21,6 +25,7 @@ interface IUser extends Document {
   post: IPost[];
   follower: IFollower[];
   following: IFollowing[];
+  notification: INotification[]
 }
 
 const userSchema = new Schema<IUser>({
@@ -49,8 +54,24 @@ const userSchema = new Schema<IUser>({
       },
     },
   ],
-  follower: [],
-  following: [],
+  follower: [{
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User"
+    }
+  }],
+  following: [{
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User"
+    }
+  }],
+  notification: [{
+    notifId: {
+      type: Schema.Types.ObjectId,
+      ref: "Notif"
+    }
+  }]
 });
 
 export const userModel = mongoose.model<IUser>("User", userSchema);

@@ -16,6 +16,7 @@ const userModel_1 = require("../model/userModel");
 const likeModel_1 = require("../model/likeModel");
 const commentModel_1 = require("../model/commentModel");
 const replyModel_1 = require("../model/replyModel");
+const notifModel_1 = require("../model/notifModel");
 const createPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const createdBy = req.user.userId;
@@ -131,7 +132,6 @@ const updatePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             }
             post.images.push({ imageUrl: result.secure_url });
             yield post.save();
-            // Save the changes to the post
         }
         if (updateText) {
             // Update the post text if provided
@@ -183,6 +183,7 @@ const likePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(401).json({ msg: 'Token invalid' });
         }
         const post = yield postModel_1.postModel.findOne({ _id: id });
+        const targetUser = yield userModel_1.userModel.findOne({ _id: post === null || post === void 0 ? void 0 : post.createdBy._id });
         const check = yield likeModel_1.likeModel.findOne({ postId: id, createdBy: userId });
         console.log(check);
         if (check) {
@@ -195,6 +196,16 @@ const likePost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const like = yield likeModel_1.likeModel.create(newLike);
         post === null || post === void 0 ? void 0 : post.like.push({ likeId: like._id });
         yield (post === null || post === void 0 ? void 0 : post.save());
+        const newNotification = new notifModel_1.NotifModel({
+            notificationFor: post === null || post === void 0 ? void 0 : post.createdBy._id,
+            createdBy: user._id,
+            notificationText: `${user.username} like your post`
+        });
+        const notif = yield notifModel_1.NotifModel.create(newNotification);
+        targetUser === null || targetUser === void 0 ? void 0 : targetUser.notification.push({
+            notifId: notif._id
+        });
+        yield (targetUser === null || targetUser === void 0 ? void 0 : targetUser.save());
         return res.status(200).json({ msg: "Success like post", post });
     }
     catch (error) {
@@ -229,7 +240,12 @@ const commentPost = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res.status(400).json({ msg: "Please provide comment text" });
     }
     try {
+        const user = yield userModel_1.userModel.findOne({ _id: userId });
+        if (!user) {
+            return res.status(401).json({ msg: "Token Invalid" });
+        }
         const post = yield postModel_1.postModel.findOne({ _id: postId });
+        const targetUser = yield userModel_1.userModel.findOne({ _id: post === null || post === void 0 ? void 0 : post.createdBy._id });
         if (!post) {
             return res.status(404).json({ msg: "Post not found or deleted" });
         }
@@ -241,6 +257,16 @@ const commentPost = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const comment = yield commentModel_1.commentModel.create(newComment);
         post.comment.push({ commentId: comment._id });
         yield post.save();
+        const newNotification = new notifModel_1.NotifModel({
+            notificationText: `${user.username} commented on your post`,
+            notificationFor: targetUser === null || targetUser === void 0 ? void 0 : targetUser._id,
+            createdBy: user._id
+        });
+        const notif = yield notifModel_1.NotifModel.create(newNotification);
+        targetUser === null || targetUser === void 0 ? void 0 : targetUser.notification.push({
+            notifId: notif._id
+        });
+        yield (targetUser === null || targetUser === void 0 ? void 0 : targetUser.save());
         return res.status(200).json({ msg: "success", comment });
     }
     catch (error) {

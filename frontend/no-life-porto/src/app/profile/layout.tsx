@@ -13,7 +13,7 @@ import { RootState } from "@/store/store";
 import { finishUpdate, updateProfile } from "@/store/slice";
 import UpdateProfile from "@/component/updateProfile";
 
-interface Iuser {
+export interface Iuser {
   _id?: string;
   avatar: string;
   username: string;
