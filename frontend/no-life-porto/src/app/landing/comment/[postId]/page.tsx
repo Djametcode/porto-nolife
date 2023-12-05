@@ -84,7 +84,7 @@ const CommentComponent = ({ params }: { params: { postId: string } }) => {
   }, [refresher]);
   return (
     <div className=" fixed bottom-0 h-full w-full z-50 bg-black">
-      <div className=" flex flex-col gap-9 overflow-scroll">
+      <div className=" flex flex-col gap-9">
         <div className=" flex justify-center items-center w-full font-figtree h-16 text-white">
           <h1 className=" text-lg"> Comment</h1>
           <div className=" absolute right-9">
@@ -93,7 +93,7 @@ const CommentComponent = ({ params }: { params: { postId: string } }) => {
             </Link>
           </div>
         </div>
-        <div>
+        <div className=" h-full overflow-scroll">
           {comment.map((item) => {
             return (
               <>
