@@ -60,7 +60,7 @@ export default function ProfileLayout({
   console.log(update);
 
   return (
-    <div className=" md:max-w-[450px] justify-center bg-black relative">
+    <div className=" md:max-w-[450px] justify-center relative">
       {update
         ? user.map((item) => {
             return (
