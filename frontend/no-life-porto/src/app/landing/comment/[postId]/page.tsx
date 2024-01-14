@@ -84,7 +84,7 @@ const CommentComponent = ({ params }: { params: { postId: string } }) => {
   }, [refresher]);
   return (
     <div className=" fixed bottom-0 h-full w-full z-50 bg-black">
-      <div className=" flex flex-col gap-9">
+      <div className=" flex flex-col gap-9 h-full">
         <div className=" flex justify-center items-center w-full font-figtree h-16 text-white">
           <h1 className=" text-lg"> Comment</h1>
           <div className=" absolute right-9">
@@ -93,14 +93,14 @@ const CommentComponent = ({ params }: { params: { postId: string } }) => {
             </Link>
           </div>
         </div>
-        <div className=" h-full overflow-scroll">
+        <div className=" h-full overflow-scroll pb-20">
           {comment.map((item) => {
             return (
-              <>
-                <div className=" w-full h-20 flex gap-4 items-start pl-3">
+              <div key={item.createdBy.username} className=" relative w-full">
+                <div className=" w-full h-20 flex gap-4 pl-3">
                   <div className=" w-[50px] h-[50px]">
                     <img
-                      className=" w-full h-full object-contain rounded-full"
+                      className=" w-full h-full object-cover rounded-full"
                       src={item.createdBy.avatar}
                       alt=""
                     />
@@ -119,7 +119,7 @@ const CommentComponent = ({ params }: { params: { postId: string } }) => {
                     <AiOutlineHeart size={18} />
                   </div>
                 </div>
-              </>
+              </div>
             );
           })}
         </div>

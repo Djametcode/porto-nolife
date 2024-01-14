@@ -16,7 +16,7 @@ const createPostHandler = async (data: IData) => {
     }
 
     const response = await axios.post(
-      "https://porto-nolife-backend.vercel.app/api/v17/no-life/post/create-post",
+      "http://localhost:3000/api/v17/no-life/post/create-post",
       item,
       {
         headers: {

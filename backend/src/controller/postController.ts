@@ -63,7 +63,7 @@ const createPost = async (req: Request, res: Response) => {
 
 const getAllPost = async (req: Request, res: Response) => {
     try {
-        const post = await postModel.find({}).populate({ path: "createdBy", select: ["username", "avatar", "follower"] }).populate({ path: "like.likeId", populate: { path: "createdBy", select: ["_id", "username"] } })
+        const post = await postModel.find({}).populate({ path: "createdBy", select: ["username", "avatar", "follower"] }).populate({ path: "like.likeId", populate: { path: "createdBy", select: ["_id", "username"] } }).sort({ createdDate: -1 })
 
         return res.status(200).json({ msg: "success", post })
     } catch (error) {

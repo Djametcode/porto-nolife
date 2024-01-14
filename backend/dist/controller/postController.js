@@ -65,7 +65,7 @@ const createPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.createPost = createPost;
 const getAllPost = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const post = yield postModel_1.postModel.find({}).populate({ path: "createdBy", select: ["username", "avatar", "follower"] }).populate({ path: "like.likeId", populate: { path: "createdBy", select: ["_id", "username"] } });
+        const post = yield postModel_1.postModel.find({}).populate({ path: "createdBy", select: ["username", "avatar", "follower"] }).populate({ path: "like.likeId", populate: { path: "createdBy", select: ["_id", "username"] } }).sort({ createdDate: -1 });
         return res.status(200).json({ msg: "success", post });
     }
     catch (error) {
