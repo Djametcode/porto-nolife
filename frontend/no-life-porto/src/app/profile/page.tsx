@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { FaPlus } from "react-icons/fa";
 
 interface ImageUrl {
   imageUrl: string;
@@ -37,38 +38,48 @@ export default function ProfilePost() {
   }, [refresher]);
 
   return (
-    <div className=" relative grid grid-cols-3 overflow-hidden pb-12">
-      {post.map((item) => {
-        return item.images.length !== 0 ? (
-          item.images[0].imageUrl.includes("video") ? (
-            <div
-              onClick={() => router.push(`post-detail/${item._id}`)}
-              className=" cursor-pointer h-[150px]"
-            >
-              <video
-                className=" h-full w-full object-cover"
-                controls
-                src={item.images[0].imageUrl}
-              />
-            </div>
+    <div className=" relative grid grid-cols-3 overflow-hidden w-full pb-12">
+      {post.length === 0 ? (
+        <div className=" h-[400px] w-screen bg-black text-white flex items-center justify-center">
+          <p>New in nolife ?</p>
+          <div className=" text-white flex gap-3 items-center bg-slate-100/30 p-2 rounded-xl">
+            <FaPlus size={15} />
+            <p>No Post</p>
+          </div>
+        </div>
+      ) : (
+        post.map((item) => {
+          return item.images.length !== 0 ? (
+            item.images[0].imageUrl.includes("video") ? (
+              <div
+                onClick={() => router.push(`post-detail/${item._id}`)}
+                className=" cursor-pointer h-[150px]"
+              >
+                <video
+                  className=" h-full w-full object-cover"
+                  controls
+                  src={item.images[0].imageUrl}
+                />
+              </div>
+            ) : (
+              <Link href={`post-detail/${item._id}`} className=" h-[150px]">
+                <img
+                  className=" w-full h-full object-cover"
+                  src={item.images[0].imageUrl}
+                  alt=""
+                />
+              </Link>
+            )
           ) : (
-            <Link href={`post-detail/${item._id}`} className=" h-[150px]">
-              <img
-                className=" w-full h-full object-cover"
-                src={item.images[0].imageUrl}
-                alt=""
-              />
+            <Link
+              href={`post-detail/${item._id}`}
+              className=" p-2 h-[150px] bg-black text-white font-figtree"
+            >
+              <p className=" text-xs">{item.postText}</p>
             </Link>
-          )
-        ) : (
-          <Link
-            href={`post-detail/${item._id}`}
-            className=" p-2 h-[150px] bg-black text-white font-figtree"
-          >
-            <p className=" text-xs">{item.postText}</p>
-          </Link>
-        );
-      })}
+          );
+        })
+      )}
     </div>
   );
 }
