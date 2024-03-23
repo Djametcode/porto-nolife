@@ -7,8 +7,8 @@ export default function NotifLayoutComponent({
   children: React.ReactNode;
 }) {
   return (
-    <div className=" w-screen h-screen bg-black">
-      <div className=" sticky top-0">
+    <div className=" w-screen h-screen">
+      <div className=" fixed w-full top-0">
         <NotificationNavbarComponent />
       </div>
       {children}

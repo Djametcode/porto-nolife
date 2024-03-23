@@ -8,7 +8,7 @@ interface IData {
 export const loginHandler = async (data: IData) => {
   try {
     const response = await axios.post(
-      "http://localhost:3000/api/v17/no-life/auth/login-user",
+      "https://porto-nolife-backend.vercel.app/api/v17/no-life/auth/login-user",
       data
     );
     return response.data;

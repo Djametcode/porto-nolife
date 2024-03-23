@@ -9,7 +9,7 @@ export const getAllPostHandler = async () => {
   }
   try {
     const response = await axios.get(
-      "http://localhost:3000/api/v17/no-life/post/get-all-post",
+      "https://porto-nolife-backend.vercel.app/api/v17/no-life/post/get-all-post",
       {
         headers: {
           Authorization: `Bearer ${token}`,

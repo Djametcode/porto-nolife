@@ -35,7 +35,7 @@ export default function NotificationComponent({
     getNotifHandler();
   }, []);
   return (
-    <div className=" p-3 flex flex-col gap-5">
+    <div className=" p-3 pt-16 flex flex-col gap-5 bg-black">
       {notif.map((item) => {
         return (
           <div

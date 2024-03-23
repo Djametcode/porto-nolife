@@ -50,7 +50,7 @@ export default function SearchComponent() {
   const searchSomething = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/v17/no-life/post/search?key=${userInput}`,
+        `https://porto-nolife-backend.vercel.app/api/v17/no-life/post/search?key=${userInput}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

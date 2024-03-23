@@ -9,7 +9,7 @@ export const likePostHandler = async (
   const token = Cookies.get("token");
   try {
     const response = await axios.post(
-      `http://localhost:3000/api/v17/no-life/post/like-post/${postId}`,
+      `https://porto-nolife-backend.vercel.app/api/v17/no-life/post/like-post/${postId}`,
       {},
       {
         headers: {

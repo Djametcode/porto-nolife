@@ -9,7 +9,7 @@ interface IRegist {
 export const signUpHandler = async (data: IRegist) => {
   try {
     const response = await axios.post(
-      "http://localhost:3000/api/v17/no-life/auth/regist-user",
+      "https://porto-nolife-backend.vercel.app/api/v17/no-life/auth/regist-user",
       data
     );
     return response.data;
